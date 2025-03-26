@@ -23,7 +23,7 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -48,7 +48,8 @@ class UserControllerTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        List<User> users = objectMapper.readValue(allUsersJson, new TypeReference<>() {});
+        List<User> users = objectMapper.readValue(allUsersJson, new TypeReference<>() {
+        });
         assertEquals(1, users.size());
         assertEquals("testlogin", users.get(0).getName(), "Name должно замениться на login, если было пустое");
     }
