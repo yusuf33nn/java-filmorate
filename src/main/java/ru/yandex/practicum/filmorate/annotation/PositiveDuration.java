@@ -10,11 +10,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PositiveDurationValidator.class)
 public @interface PositiveDuration {
     String message() default "Duration должно быть положительным числом";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

@@ -15,7 +15,10 @@ import java.lang.annotation.Target;
 public @interface MinDate {
 
     String message() default "Дата должна быть не меньше {min}";
+
     String min();
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
