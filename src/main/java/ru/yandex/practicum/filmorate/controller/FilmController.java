@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/movies")
+@RequestMapping(value = "/films")
 public class FilmController {
 
     private static final AtomicLong ID_COUNTER = new AtomicLong(0L);
