@@ -41,7 +41,7 @@ public class FilmControllerTest {
         mockMvc.perform(post("/movies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         String allFilmsJson = mockMvc.perform(get("/movies"))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ public class FilmControllerTest {
         mockMvc.perform(put("/movies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -108,6 +108,6 @@ public class FilmControllerTest {
         mockMvc.perform(put("/movies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 }
