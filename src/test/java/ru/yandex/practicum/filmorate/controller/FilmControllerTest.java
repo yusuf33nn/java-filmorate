@@ -38,12 +38,12 @@ public class FilmControllerTest {
 
         String filmJson = objectMapper.writeValueAsString(film);
 
-        mockMvc.perform(post("/movies")
+        mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
                 .andExpect(status().isCreated());
 
-        String allFilmsJson = mockMvc.perform(get("/movies"))
+        String allFilmsJson = mockMvc.perform(get("/films"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -69,7 +69,7 @@ public class FilmControllerTest {
 
         String filmJson = objectMapper.writeValueAsString(film);
 
-        mockMvc.perform(post("/movies")
+        mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
                 .andExpect(status().isBadRequest());
@@ -87,7 +87,7 @@ public class FilmControllerTest {
 
         String filmJson = objectMapper.writeValueAsString(film);
 
-        mockMvc.perform(put("/movies")
+        mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
                 .andExpect(status().isBadRequest());
@@ -105,7 +105,7 @@ public class FilmControllerTest {
 
         String filmJson = objectMapper.writeValueAsString(film);
 
-        mockMvc.perform(put("/movies")
+        mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
                 .andExpect(status().isBadRequest());
