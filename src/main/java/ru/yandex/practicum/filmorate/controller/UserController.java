@@ -23,13 +23,13 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/users")
 public class UserController {
 
-    private static final AtomicLong ID_COUNTER = new AtomicLong(0L);
+    private final AtomicLong userId = new AtomicLong(0L);
     private final Map<Long, User> users = new HashMap<>();
 
     @PostMapping
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         log.info("Request Body: {}", user);
-        Long filmId = ID_COUNTER.incrementAndGet();
+        Long filmId = userId.incrementAndGet();
         user.setId(filmId);
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());

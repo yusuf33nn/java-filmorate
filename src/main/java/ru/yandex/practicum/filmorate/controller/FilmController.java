@@ -23,14 +23,14 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping(value = "/films")
 public class FilmController {
 
-    private static final AtomicLong ID_COUNTER = new AtomicLong(0L);
+    private final AtomicLong filmId = new AtomicLong(0L);
 
     private final Map<Long, Film> movies = new HashMap<>();
 
     @PostMapping
     public ResponseEntity<Film> createMovie(@Valid @RequestBody Film film) {
         log.info("Request Body: {}", film);
-        Long filmId = ID_COUNTER.incrementAndGet();
+        Long filmId = this.filmId.incrementAndGet();
         film.setId(filmId);
         return ResponseEntity.status(CREATED)
                 .body(movies.put(filmId, film));
