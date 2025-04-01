@@ -34,8 +34,8 @@ public class UserController {
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        return ResponseEntity.status(CREATED)
-                .body(users.put(filmId, user));
+        users.put(filmId, user);
+        return ResponseEntity.status(CREATED).body(user);
     }
 
     @GetMapping

@@ -32,8 +32,8 @@ public class FilmController {
         log.info("Request Body: {}", film);
         Long filmId = this.filmId.incrementAndGet();
         film.setId(filmId);
-        return ResponseEntity.status(CREATED)
-                .body(movies.put(filmId, film));
+        movies.put(filmId, film);
+        return ResponseEntity.status(CREATED).body(film);
     }
 
     @GetMapping
