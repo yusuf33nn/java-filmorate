@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class FilmControllerTest {
         film.setName("Interstellar");
         film.setDescription("Sci-fi epic by Christopher Nolan");
         film.setReleaseDate(LocalDate.of(2014, 11, 7));
-        film.setDuration(Duration.ofMinutes(169));
+        film.setDuration(169L);
 
         String filmJson = objectMapper.writeValueAsString(film);
 
@@ -56,7 +55,7 @@ public class FilmControllerTest {
 
         assertEquals(1L, storedFilm.getId());
         assertEquals("Interstellar", storedFilm.getName());
-        assertEquals(Duration.ofMinutes(169), storedFilm.getDuration());
+        assertEquals(169L, storedFilm.getDuration());
     }
 
     @Test
@@ -65,7 +64,7 @@ public class FilmControllerTest {
         film.setName("Very Old Film");
         film.setDescription("Released before 1895-12-28");
         film.setReleaseDate(LocalDate.of(1800, 1, 1)); // слишком старая дата
-        film.setDuration(Duration.ofMinutes(100));
+        film.setDuration(100L);
 
         String filmJson = objectMapper.writeValueAsString(film);
 
@@ -83,7 +82,7 @@ public class FilmControllerTest {
         film.setName("Invalid ID");
         film.setDescription("id = 0");
         film.setReleaseDate(LocalDate.of(2020, 1, 1));
-        film.setDuration(Duration.ofMinutes(120));
+        film.setDuration(120L);
 
         String filmJson = objectMapper.writeValueAsString(film);
 
@@ -101,7 +100,7 @@ public class FilmControllerTest {
         film.setName("Invalid ID");
         film.setDescription("id = null");
         film.setReleaseDate(LocalDate.of(2020, 1, 1));
-        film.setDuration(Duration.ofMinutes(120));
+        film.setDuration(120L);
 
         String filmJson = objectMapper.writeValueAsString(film);
 
