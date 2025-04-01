@@ -4,12 +4,10 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import ru.yandex.practicum.filmorate.annotation.PositiveDuration;
 
-import java.time.Duration;
-
-public class PositiveDurationValidator implements ConstraintValidator<PositiveDuration, Duration> {
+public class PositiveDurationValidator implements ConstraintValidator<PositiveDuration, Long> {
 
     @Override
-    public boolean isValid(Duration duration, ConstraintValidatorContext context) {
-        return duration.compareTo(Duration.ZERO) > 0;
+    public boolean isValid(Long duration, ConstraintValidatorContext context) {
+        return duration > 0L;
     }
 }

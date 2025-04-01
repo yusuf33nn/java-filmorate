@@ -31,7 +31,7 @@ public class UserController {
         log.info("Request Body: {}", user);
         Long filmId = userId.incrementAndGet();
         user.setId(filmId);
-        if (user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         users.put(filmId, user);
@@ -45,11 +45,16 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<User> updateMovie(@Valid @RequestBody User user) {
-        if (user.getId() == null || user.getId() == 0) {
+        Long userId = user.getId();
+        if (userId == null || userId == 0) {
             log.error("User id cannot be null or zero for update operation");
             return ResponseEntity.badRequest().build();
         }
-        users.put(user.getId(), user);
+        if (users.get(userId) == null) {
+            log.error("You cannot update user, if the user doesn't exist");
+            return ResponseEntity.internalServerError().body(user);
+        }
+        users.put(userId, user);
         return ResponseEntity.ok(user);
     }
 }

@@ -7,7 +7,6 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.MinDate;
 import ru.yandex.practicum.filmorate.annotation.PositiveDuration;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 /**
@@ -26,5 +25,5 @@ public class Film {
     private LocalDate releaseDate;
     @NotNull
     @PositiveDuration
-    private Duration duration;
+    private Long duration;
 }

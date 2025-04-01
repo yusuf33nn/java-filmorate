@@ -43,11 +43,16 @@ public class FilmController {
 
     @PutMapping
     public ResponseEntity<Film> updateMovie(@Valid @RequestBody Film film) {
-        if (film.getId() == null || film.getId() == 0) {
+        Long filmId = film.getId();
+        if (filmId == null || filmId == 0) {
             log.error("Film id cannot be null or zero for update operation");
             return ResponseEntity.badRequest().build();
         }
-        movies.put(film.getId(), film);
+        if (movies.get(filmId) == null) {
+            log.error("You cannot update film, if film doesn't exist");
+            return ResponseEntity.internalServerError().body(film);
+        }
+        movies.put(filmId, film);
         return ResponseEntity.ok(film);
     }
 }
