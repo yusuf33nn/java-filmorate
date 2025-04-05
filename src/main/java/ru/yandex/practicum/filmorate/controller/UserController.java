@@ -41,6 +41,21 @@ public class UserController implements UserApi {
         return ResponseEntity.ok(users.values().stream().toList());
     }
 
+    @Override
+    public ResponseEntity<User> findUserById(Long id) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<User> retrieveUsersFriends(Long id) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<User> showCommonFriends(Long id, Long otherId) {
+        return null;
+    }
+
     @PutMapping
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         Long userId = user.getId();
@@ -54,5 +69,15 @@ public class UserController implements UserApi {
         }
         users.put(userId, user);
         return ResponseEntity.ok(user);
+    }
+
+    @Override
+    public ResponseEntity<User> addToFriends(Long id, Long friendId) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteFromFriends(Long id, Long friendId) {
+        return null;
     }
 }
