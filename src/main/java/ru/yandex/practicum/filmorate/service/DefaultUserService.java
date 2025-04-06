@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,9 +45,11 @@ public class DefaultUserService implements UserService {
 
     @Override
     public Set<Long> showCommonFriends(Long userId, Long otherId) {
-        User user = findUserById(userId);
-        User otherUser = findUserById(otherId);
-        return null;
+        Set<Long> userFriends = findUserById(userId).getFriends();
+        Set<Long> otherUserFriends = findUserById(otherId).getFriends();
+        return userFriends.stream()
+                .filter(otherUserFriends::contains)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -63,8 +67,9 @@ public class DefaultUserService implements UserService {
     public User updateUser(User user) {
         Long userId = user.getId();
         if (userId == null || userId == 0) {
-            log.error("User id cannot be null or zero for update operation");
-            throw new RuntimeException();
+            var errorMessage = "User id cannot be null or zero for update operation";
+            log.error(errorMessage);
+            throw new ValidationException(errorMessage);
         }
         findUserById(userId);
         userStorage.saveUser(user);
@@ -73,11 +78,15 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User addToFriends(Long userId, Long friendId) {
-        return null;
+        User user = findUserById(userId);
+        user.getFriends().add(friendId);
+        return user;
     }
 
     @Override
     public User deleteFromFriends(Long userId, Long friendId) {
-        return null;
+        User user = findUserById(userId);
+        user.getFriends().remove(friendId);
+        return user;
     }
 }
