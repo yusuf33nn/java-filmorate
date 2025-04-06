@@ -23,8 +23,8 @@ public interface FilmApi {
     @GetMapping("/{id}")
     ResponseEntity<Film> findFilmById(@PathVariable Long id);
 
-    @GetMapping("/popular?count={count}")
-    ResponseEntity<List<Film>> showMostPopularFilms(@RequestParam(defaultValue = "10") Integer count);
+    @GetMapping("/popular")
+    ResponseEntity<List<Film>> showMostPopularFilms(@RequestParam(name = "count", defaultValue = "10") int count);
 
     @PostMapping
     ResponseEntity<Film> createFilm(@Valid @RequestBody Film film);
