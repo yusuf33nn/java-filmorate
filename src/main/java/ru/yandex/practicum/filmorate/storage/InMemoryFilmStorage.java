@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -26,7 +27,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> showMostPopularFilms(Integer count) {
         return films.values().stream()
-                .sorted((film1, film2) -> Long.compare(film2.getLikes().size(), film1.getLikes().size()))
+                .sorted((film1, film2) -> {
+                    var film1Size = Optional.ofNullable(film1.getLikes()).map(Set::size).orElse(0);
+                    var film2Size = Optional.ofNullable(film2.getLikes()).map(Set::size).orElse(0);
+                    return Long.compare(film2Size, film1Size);
+                })
                 .limit(count)
                 .toList();
     }
