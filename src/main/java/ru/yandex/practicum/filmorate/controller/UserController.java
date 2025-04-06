@@ -34,7 +34,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<Set<Long>> retrieveUsersFriends(Long id) {
+    public ResponseEntity<Set<User>> retrieveUsersFriends(Long id) {
         return ResponseEntity.ok(userService.retrieveUsersFriends(id));
     }
 

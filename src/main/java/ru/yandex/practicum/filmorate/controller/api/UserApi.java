@@ -24,7 +24,7 @@ public interface UserApi {
     ResponseEntity<User> findUserById(@PathVariable Long id);
 
     @GetMapping("/{id}/friends")
-    ResponseEntity<Set<Long>> retrieveUsersFriends(@PathVariable Long id);
+    ResponseEntity<Set<User>> retrieveUsersFriends(@PathVariable Long id);
 
     @GetMapping("/{id}/friends/common/{otherId}")
     ResponseEntity<Set<Long>> showCommonFriends(@PathVariable Long id, @PathVariable Long otherId);

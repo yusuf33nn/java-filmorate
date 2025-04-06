@@ -11,7 +11,7 @@ public interface UserService {
 
     User findUserById(Long userId);
 
-    Set<Long> retrieveUsersFriends(Long userId);
+    Set<User> retrieveUsersFriends(Long userId);
 
     Set<Long> showCommonFriends(Long userId, Long otherId);
 
