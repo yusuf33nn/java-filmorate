@@ -39,7 +39,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<Set<Long>> showCommonFriends(Long id, Long otherId) {
+    public ResponseEntity<Set<User>> showCommonFriends(Long id, Long otherId) {
         return ResponseEntity.ok(userService.showCommonFriends(id, otherId));
     }
 

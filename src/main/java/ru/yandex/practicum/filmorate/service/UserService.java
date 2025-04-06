@@ -13,7 +13,7 @@ public interface UserService {
 
     Set<User> retrieveUsersFriends(Long userId);
 
-    Set<Long> showCommonFriends(Long userId, Long otherId);
+    Set<User> showCommonFriends(Long userId, Long otherId);
 
     User createUser(User user);
 

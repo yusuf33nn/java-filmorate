@@ -27,7 +27,7 @@ public interface UserApi {
     ResponseEntity<Set<User>> retrieveUsersFriends(@PathVariable Long id);
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    ResponseEntity<Set<Long>> showCommonFriends(@PathVariable Long id, @PathVariable Long otherId);
+    ResponseEntity<Set<User>> showCommonFriends(@PathVariable Long id, @PathVariable Long otherId);
 
     @PostMapping
     ResponseEntity<User> createUser(@Valid @RequestBody User user);

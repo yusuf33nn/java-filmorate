@@ -19,6 +19,7 @@ public class DefaultFilmService implements FilmService {
 
     private final AtomicLong filmId = new AtomicLong(0L);
     private final FilmStorage filmStorage;
+    private final UserService userService;
 
     @Override
     public List<Film> findAllFilms() {
@@ -59,6 +60,7 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Film setLikeToSpecificFilmByUser(Long filmId, Long userId) {
         Film film = findFilmById(filmId);
+        userService.findUserById(userId);
         Set<Long> filmLikes = film.getLikes();
         if (filmLikes == null) {
             filmLikes = new TreeSet<>();
@@ -70,13 +72,11 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Film removeLikeFromSpecificFilmByUser(Long filmId, Long userId) {
         Film film = findFilmById(filmId);
+        userService.findUserById(userId);
         Set<Long> filmLikes = film.getLikes();
-        if (filmLikes == null || filmLikes.isEmpty()) {
-            var errorMessage = "You can't remove like, if the film doesn't have any likes";
-            log.error(errorMessage);
-            throw new RuntimeException(errorMessage);
+        if (filmLikes != null) {
+            filmLikes.remove(userId);
         }
-        filmLikes.remove(userId);
         return film;
     }
 }

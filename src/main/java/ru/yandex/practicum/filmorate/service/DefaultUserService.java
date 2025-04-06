@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -44,9 +45,7 @@ public class DefaultUserService implements UserService {
         User user = findUserById(userId);
         Set<Long> userFriends = user.getFriends();
         if (userFriends == null || userFriends.isEmpty()) {
-            var errorMessage = "User with ID: '%d' doesn't have any friends";
-            log.error(errorMessage);
-            throw new RuntimeException(errorMessage);
+            return Collections.emptySet();
         }
         return user.getFriends().stream()
                 .map(friendId -> userStorage.findUserById(friendId).orElse(null))
@@ -55,11 +54,19 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public Set<Long> showCommonFriends(Long userId, Long otherId) {
+    public Set<User> showCommonFriends(Long userId, Long otherId) {
         Set<Long> userFriends = findUserById(userId).getFriends();
+        if (userFriends == null) {
+            return Collections.emptySet();
+        }
         Set<Long> otherUserFriends = findUserById(otherId).getFriends();
+        if (otherUserFriends == null) {
+            return Collections.emptySet();
+        }
         return userFriends.stream()
                 .filter(otherUserFriends::contains)
+                .map(commonFriendId -> userStorage.findUserById(commonFriendId).orElse(null))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
@@ -107,13 +114,16 @@ public class DefaultUserService implements UserService {
     @Override
     public User deleteFromFriends(Long userId, Long friendId) {
         User user = findUserById(userId);
-        Set<Long> userFriends = user.getFriends();
-        if (userFriends == null || userFriends.isEmpty()) {
-            var errorMessage = "You can't remove friend, if the user doesn't have friends";
-            log.error(errorMessage);
-            throw new RuntimeException(errorMessage);
+        User friend = findUserById(friendId);
+
+
+        if (user.getFriends() != null) {
+            user.getFriends().remove(friendId);
         }
-        userFriends.remove(friendId);
+
+        if (friend.getFriends() != null) {
+            friend.getFriends().remove(userId);
+        }
         return user;
     }
 }
