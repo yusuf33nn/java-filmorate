@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,9 @@ public class DefaultUserService implements UserService {
     @Override
     public User addToFriends(Long userId, Long friendId) {
         User user = findUserById(userId);
+        if (user.getFriends() == null) {
+            user.setFriends(new TreeSet<>());
+        }
         user.getFriends().add(friendId);
         return user;
     }
@@ -86,7 +90,13 @@ public class DefaultUserService implements UserService {
     @Override
     public User deleteFromFriends(Long userId, Long friendId) {
         User user = findUserById(userId);
-        user.getFriends().remove(friendId);
+        Set<Long> userFriends = user.getFriends();
+        if (userFriends == null || userFriends.isEmpty()) {
+            var errorMessage = "You can't remove friend, if the user doesn't have friends";
+            log.error(errorMessage);
+            throw new RuntimeException(errorMessage);
+        }
+        userFriends.remove(friendId);
         return user;
     }
 }
