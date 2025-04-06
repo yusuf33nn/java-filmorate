@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
@@ -51,17 +52,17 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         log.info("Request Body: {}", user);
-
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.updateUser(user));
     }
 
     @Override
     public ResponseEntity<User> addToFriends(Long id, Long friendId) {
-        return null;
+        return ResponseEntity.ok(userService.addToFriends(id, friendId));
     }
 
     @Override
     public ResponseEntity<Void> deleteFromFriends(Long id, Long friendId) {
-        return null;
+        userService.deleteFromFriends(id, friendId);
+        return ResponseEntity.status(OK).build();
     }
 }
