@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> showMostPopularFilms(Integer count) {
         return films.values().stream().toList().stream()
-                .sorted(Comparator.comparingInt((Film film) -> film.getLikes().size()).reversed())
+                .sorted((film1, film2) -> Long.compare(film2.getLikes().size(), film1.getLikes().size()))
                 .limit(count)
                 .toList();
     }
