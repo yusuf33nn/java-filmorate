@@ -8,6 +8,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
@@ -57,14 +59,24 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Film setLikeToSpecificFilmByUser(Long filmId, Long userId) {
         Film film = findFilmById(filmId);
-        film.getLikes().add(userId);
+        Set<Long> filmLikes = film.getLikes();
+        if (filmLikes == null) {
+            filmLikes = new TreeSet<>();
+        }
+        filmLikes.add(userId);
         return film;
     }
 
     @Override
     public Film removeLikeFromSpecificFilmByUser(Long filmId, Long userId) {
         Film film = findFilmById(filmId);
-        film.getLikes().remove(userId);
+        Set<Long> filmLikes = film.getLikes();
+        if (filmLikes == null || filmLikes.isEmpty()) {
+            var errorMessage = "You can't remove like, if the film doesn't have any likes";
+            log.error(errorMessage);
+            throw new RuntimeException(errorMessage);
+        }
+        filmLikes.remove(userId);
         return film;
     }
 }
