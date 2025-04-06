@@ -42,6 +42,12 @@ public class DefaultUserService implements UserService {
     @Override
     public Set<User> retrieveUsersFriends(Long userId) {
         User user = findUserById(userId);
+        Set<Long> userFriends = user.getFriends();
+        if (userFriends == null || userFriends.isEmpty()) {
+            var errorMessage = "User with ID: '%d' doesn't have any friends";
+            log.error(errorMessage);
+            throw new RuntimeException(errorMessage);
+        }
         return user.getFriends().stream()
                 .map(friendId -> userStorage.findUserById(friendId).orElse(null))
                 .filter(Objects::nonNull)
@@ -84,10 +90,17 @@ public class DefaultUserService implements UserService {
     @Override
     public User addToFriends(Long userId, Long friendId) {
         User user = findUserById(userId);
+        User friend = findUserById(friendId);
+
         if (user.getFriends() == null) {
             user.setFriends(new TreeSet<>());
         }
         user.getFriends().add(friendId);
+
+        if (friend.getFriends() == null) {
+            friend.setFriends(new TreeSet<>());
+        }
+        friend.getFriends().add(userId);
         return user;
     }
 
