@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -41,6 +40,7 @@ public class DefaultFilmService implements FilmService {
     public Film createFilm(Film film) {
         Long filmId = this.filmId.incrementAndGet();
         film.setId(filmId);
+        film.setLikes(new TreeSet<>());
         filmStorage.saveFilm(film);
         return film;
     }
@@ -61,11 +61,7 @@ public class DefaultFilmService implements FilmService {
     public Film setLikeToSpecificFilmByUser(Long filmId, Long userId) {
         Film film = findFilmById(filmId);
         userService.findUserById(userId);
-        Set<Long> filmLikes = film.getLikes();
-        if (filmLikes == null) {
-            filmLikes = new TreeSet<>();
-        }
-        filmLikes.add(userId);
+        film.getLikes().add(userId);
         return film;
     }
 
@@ -73,10 +69,7 @@ public class DefaultFilmService implements FilmService {
     public Film removeLikeFromSpecificFilmByUser(Long filmId, Long userId) {
         Film film = findFilmById(filmId);
         userService.findUserById(userId);
-        Set<Long> filmLikes = film.getLikes();
-        if (filmLikes != null) {
-            filmLikes.remove(userId);
-        }
+        film.getLikes().remove(userId);
         return film;
     }
 }

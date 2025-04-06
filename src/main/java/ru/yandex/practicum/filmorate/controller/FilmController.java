@@ -37,7 +37,6 @@ public class FilmController implements FilmApi {
     @Override
     public ResponseEntity<Film> createFilm(Film film) {
         log.info("Request Body: {}", film);
-
         return ResponseEntity.status(CREATED).body(filmService.createFilm(film));
     }
 
