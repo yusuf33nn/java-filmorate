@@ -1,30 +1,36 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FilmController.class)
-@Disabled
 public class FilmControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private FilmService filmService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -36,28 +42,26 @@ public class FilmControllerTest {
         film.setDescription("Sci-fi epic by Christopher Nolan");
         film.setReleaseDate(LocalDate.of(2014, 11, 7));
         film.setDuration(169L);
-
         String filmJson = objectMapper.writeValueAsString(film);
+
+        film.setId(1L);
+        when(filmService.createFilm(any(Film.class))).thenReturn(film);
+        when(filmService.findAllFilms()).thenReturn(List.of(film));
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmJson))
                 .andExpect(status().isCreated());
 
-        String allFilmsJson = mockMvc.perform(get("/films"))
+        mockMvc.perform(get("/films"))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        List<Film> films = objectMapper.readValue(allFilmsJson, new TypeReference<>() {
-        });
-        assertEquals(1, films.size());
-        Film storedFilm = films.get(0);
-
-        assertEquals(1L, storedFilm.getId());
-        assertEquals("Interstellar", storedFilm.getName());
-        assertEquals(169L, storedFilm.getDuration());
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("Interstellar"))
+                .andExpect(jsonPath("$[0].duration").value(169L));
     }
 
     @Test
@@ -87,6 +91,7 @@ public class FilmControllerTest {
         film.setDuration(120L);
 
         String filmJson = objectMapper.writeValueAsString(film);
+        when(filmService.updateFilm(any(Film.class))).thenThrow(new ValidationException());
 
         mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,6 +110,7 @@ public class FilmControllerTest {
         film.setDuration(120L);
 
         String filmJson = objectMapper.writeValueAsString(film);
+        when(filmService.updateFilm(any(Film.class))).thenThrow(new ValidationException());
 
         mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
