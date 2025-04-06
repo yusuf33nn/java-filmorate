@@ -40,7 +40,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<Set<Long>> showCommonFriends(Long id, Long otherId) {
-        return null;
+        return ResponseEntity.ok(userService.showCommonFriends(id, otherId));
     }
 
     @Override
