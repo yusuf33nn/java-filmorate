@@ -10,9 +10,8 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -48,8 +47,9 @@ public class DefaultUserService implements UserService {
             return Collections.emptySet();
         }
         return user.getFriends().stream()
-                .map(friendId -> userStorage.findUserById(friendId).orElse(null))
-                .filter(Objects::nonNull)
+                .map(userStorage::findUserById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toSet());
     }
 
@@ -65,8 +65,9 @@ public class DefaultUserService implements UserService {
         }
         return userFriends.stream()
                 .filter(otherUserFriends::contains)
-                .map(commonFriendId -> userStorage.findUserById(commonFriendId).orElse(null))
-                .filter(Objects::nonNull)
+                .map(userStorage::findUserById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toSet());
     }
 
@@ -99,14 +100,7 @@ public class DefaultUserService implements UserService {
         User user = findUserById(userId);
         User friend = findUserById(friendId);
 
-        if (user.getFriends() == null) {
-            user.setFriends(new TreeSet<>());
-        }
         user.getFriends().add(friendId);
-
-        if (friend.getFriends() == null) {
-            friend.setFriends(new TreeSet<>());
-        }
         friend.getFriends().add(userId);
         return user;
     }
@@ -117,13 +111,10 @@ public class DefaultUserService implements UserService {
         User friend = findUserById(friendId);
 
 
-        if (user.getFriends() != null) {
-            user.getFriends().remove(friendId);
-        }
+        user.getFriends().remove(friendId);
 
-        if (friend.getFriends() != null) {
-            friend.getFriends().remove(userId);
-        }
+
+        friend.getFriends().remove(userId);
         return user;
     }
 }

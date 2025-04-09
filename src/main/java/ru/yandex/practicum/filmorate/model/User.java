@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class User {
@@ -24,5 +25,5 @@ public class User {
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
-    private Set<Long> friends;
+    private Set<Long> friends = new TreeSet<>();
 }
