@@ -1,21 +1,26 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
@@ -23,6 +28,9 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -38,20 +46,25 @@ class UserControllerTest {
 
         String userJson = objectMapper.writeValueAsString(user);
 
+        user.setId(1L);
+        user.setName("testlogin");
+        when(userService.createUser(any(User.class))).thenReturn(user);
+        when(userService.showAllUsers()).thenReturn(List.of(user));
+
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isCreated());
 
-        String allUsersJson = mockMvc.perform(get("/users"))
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        List<User> users = objectMapper.readValue(allUsersJson, new TypeReference<>() {
-        });
-        assertEquals(1, users.size());
-        assertEquals("testlogin", users.get(0).getName(), "Name должно замениться на login, если было пустое");
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("testlogin"))
+                .andExpect(jsonPath("$[0].email").value("test@mail.com"));
     }
 
     @Test
@@ -63,7 +76,7 @@ class UserControllerTest {
         user.setBirthday(LocalDate.of(2000, 1, 1));
 
         String userJson = objectMapper.writeValueAsString(user);
-
+        when(userService.createUser(any(User.class))).thenThrow(new ValidationException());
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -80,6 +93,7 @@ class UserControllerTest {
         user.setBirthday(LocalDate.now().plusDays(1)); // Будущее время
 
         String userJson = objectMapper.writeValueAsString(user);
+        when(userService.createUser(any(User.class))).thenThrow(new ValidationException());
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,6 +111,7 @@ class UserControllerTest {
         user.setBirthday(LocalDate.of(2000, 1, 1));
 
         String userJson = objectMapper.writeValueAsString(user);
+        when(userService.updateUser(any(User.class))).thenThrow(new ValidationException());
 
         mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,7 +129,7 @@ class UserControllerTest {
         user.setBirthday(LocalDate.of(2000, 1, 1));
 
         String userJson = objectMapper.writeValueAsString(user);
-
+        when(userService.updateUser(any(User.class))).thenThrow(new ValidationException());
         mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))

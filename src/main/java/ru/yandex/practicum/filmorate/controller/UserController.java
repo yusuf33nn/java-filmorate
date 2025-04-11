@@ -1,60 +1,68 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.controller.api.UserApi;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequiredArgsConstructor
+public class UserController implements UserApi {
 
-    private final AtomicLong userId = new AtomicLong(0L);
-    private final Map<Long, User> users = new HashMap<>();
+    private final UserService userService;
 
-    @PostMapping
+    @Override
+    public ResponseEntity<List<User>> showAllUsers() {
+        return ResponseEntity.ok(userService.showAllUsers());
+    }
+
+    @Override
+    public ResponseEntity<User> findUserById(Long id) {
+        return ResponseEntity.ok(userService.findUserById(id));
+    }
+
+    @Override
+    public ResponseEntity<Set<User>> retrieveUsersFriends(Long id) {
+        return ResponseEntity.ok(userService.retrieveUsersFriends(id));
+    }
+
+    @Override
+    public ResponseEntity<Set<User>> showCommonFriends(Long id, Long otherId) {
+        return ResponseEntity.ok(userService.showCommonFriends(id, otherId));
+    }
+
+    @Override
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         log.info("Request Body: {}", user);
-        Long filmId = userId.incrementAndGet();
-        user.setId(filmId);
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        users.put(filmId, user);
-        return ResponseEntity.status(CREATED).body(user);
+        return ResponseEntity.status(CREATED).body(userService.createUser(user));
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> showAllMovies() {
-        return ResponseEntity.ok(users.values().stream().toList());
+    @Override
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+        log.info("Request Body: {}", user);
+        return ResponseEntity.ok(userService.updateUser(user));
     }
 
-    @PutMapping
-    public ResponseEntity<User> updateMovie(@Valid @RequestBody User user) {
-        Long userId = user.getId();
-        if (userId == null || userId == 0) {
-            log.error("User id cannot be null or zero for update operation");
-            return ResponseEntity.badRequest().build();
-        }
-        if (users.get(userId) == null) {
-            log.error("You cannot update user, if the user doesn't exist");
-            return ResponseEntity.internalServerError().body(user);
-        }
-        users.put(userId, user);
-        return ResponseEntity.ok(user);
+    @Override
+    public ResponseEntity<User> addToFriends(Long id, Long friendId) {
+        return ResponseEntity.ok(userService.addToFriends(id, friendId));
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteFromFriends(Long id, Long friendId) {
+        userService.deleteFromFriends(id, friendId);
+        return ResponseEntity.status(OK).build();
     }
 }
