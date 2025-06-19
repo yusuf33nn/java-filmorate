@@ -1,2 +1,6 @@
 # java-filmorate
-Template repository for Filmorate project.
+
+ERD
+
+![DB Diagram](src/main/resources/Filmorate_ERD.png)
+
