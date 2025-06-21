@@ -7,14 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.model.entity.User;
+import ru.yandex.practicum.filmorate.service.api.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
@@ -34,16 +32,6 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<Set<User>> retrieveUsersFriends(Long id) {
-        return ResponseEntity.ok(userService.retrieveUsersFriends(id));
-    }
-
-    @Override
-    public ResponseEntity<Set<User>> showCommonFriends(Long id, Long otherId) {
-        return ResponseEntity.ok(userService.showCommonFriends(id, otherId));
-    }
-
-    @Override
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         log.info("Request Body: {}", user);
         return ResponseEntity.status(CREATED).body(userService.createUser(user));
@@ -53,16 +41,5 @@ public class UserController implements UserApi {
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         log.info("Request Body: {}", user);
         return ResponseEntity.ok(userService.updateUser(user));
-    }
-
-    @Override
-    public ResponseEntity<User> addToFriends(Long id, Long friendId) {
-        return ResponseEntity.ok(userService.addToFriends(id, friendId));
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteFromFriends(Long id, Long friendId) {
-        userService.deleteFromFriends(id, friendId);
-        return ResponseEntity.status(OK).build();
     }
 }

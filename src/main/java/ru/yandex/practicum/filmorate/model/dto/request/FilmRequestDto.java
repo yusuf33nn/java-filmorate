@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,15 +8,10 @@ import ru.yandex.practicum.filmorate.annotation.MinDate;
 import ru.yandex.practicum.filmorate.annotation.PositiveDuration;
 
 import java.time.LocalDate;
-import java.util.Set;
 
-/**
- * Film.
- */
 @Data
-public class Film {
+public class FilmRequestDto {
 
-    private Long id;
     @NotBlank
     private String name;
     @Size(max = 200)
@@ -27,5 +22,4 @@ public class Film {
     @NotNull
     @PositiveDuration
     private Long duration;
-    private Set<Long> likes;
 }

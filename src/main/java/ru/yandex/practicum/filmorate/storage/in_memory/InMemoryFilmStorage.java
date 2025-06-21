@@ -1,7 +1,8 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.in_memory;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.entity.Film;
+import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.util.HashMap;
 import java.util.List;
