@@ -10,14 +10,14 @@ CREATE TABLE if not exists users
 CREATE TABLE if not exists friendship
 (
     requester_id bigint      NOT NULL,
-    addressee_id bigint      NOT NULL,
+    receiver_id bigint      NOT NULL,
     status       VARCHAR(50) NOT NULL,
     requested_at TIMESTAMP DEFAULT now(),
     confirmed_at TIMESTAMP,
 
-    PRIMARY KEY (requester_id, addressee_id),
+    PRIMARY KEY (requester_id, receiver_id),
     FOREIGN KEY (requester_id) REFERENCES users (id),
-    FOREIGN KEY (addressee_id) REFERENCES users (id)
+    FOREIGN KEY (receiver_id) REFERENCES users (id)
     );
 
 ALTER TABLE friendship

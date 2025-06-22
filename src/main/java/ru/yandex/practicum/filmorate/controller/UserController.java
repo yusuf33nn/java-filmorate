@@ -7,7 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
-import ru.yandex.practicum.filmorate.model.entity.User;
+import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 
 import java.util.List;
@@ -22,24 +23,25 @@ public class UserController implements UserApi {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<List<User>> showAllUsers() {
+    public ResponseEntity<List<UserResponseDto>> showAllUsers() {
         return ResponseEntity.ok(userService.showAllUsers());
     }
 
     @Override
-    public ResponseEntity<User> findUserById(Long id) {
+    public ResponseEntity<UserResponseDto> findUserById(Long id) {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
     @Override
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto user) {
         log.info("Request Body: {}", user);
         return ResponseEntity.status(CREATED).body(userService.createUser(user));
     }
 
     @Override
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserRequestDto user) {
         log.info("Request Body: {}", user);
-        return ResponseEntity.ok(userService.updateUser(user));
+        var response = userService.updateUser(user);
+        return ResponseEntity.ok(response);
     }
 }

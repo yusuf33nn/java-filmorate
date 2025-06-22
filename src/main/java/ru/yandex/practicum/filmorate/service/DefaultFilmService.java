@@ -5,75 +5,88 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
+import ru.yandex.practicum.filmorate.service.api.GenreService;
+import ru.yandex.practicum.filmorate.service.api.MpaRatingService;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.util.List;
-import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultFilmService implements FilmService {
 
-    private final AtomicLong filmId = new AtomicLong(0L);
     @Qualifier(value = "filmDbStorage")
     private final FilmStorage filmStorage;
     private final UserService userService;
+    private final FilmMapper filmMapper;
+    private final GenreService genreService;
+    private final MpaRatingService mpaRatingService;
 
     @Override
-    public List<Film> findAllFilms() {
-        return filmStorage.findAll();
+    public List<FilmResponseDto> findAllFilms() {
+        return filmStorage.findAll().stream()
+                .map(filmMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Film findFilmById(Long filmId) {
+    public FilmResponseDto findFilmById(Long filmId) {
         return filmStorage.findFilmById(filmId)
+                .map(filmMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Film with ID: '%d' is not found".formatted(filmId)));
     }
 
     @Override
-    public List<Film> showMostPopularFilms(Integer count) {
-        return filmStorage.showMostPopularFilms(count);
+    public List<FilmResponseDto> showMostPopularFilms(Integer count) {
+        return filmStorage.showMostPopularFilms(count).stream().map(filmMapper::toDto).toList();
     }
 
     @Override
-    public Film createFilm(Film film) {
-        Long filmId = this.filmId.incrementAndGet();
-        film.setId(filmId);
-        film.setLikes(new TreeSet<>());
-        filmStorage.saveFilm(film);
-        return film;
+    public FilmResponseDto createFilm(FilmRequestDto filmDto) {
+        Film filmEntity = filmMapper.toEntity(filmDto);
+        mpaRatingService.getMpaRatingById(filmEntity.getMpa().getId());
+        filmEntity = filmStorage.saveFilm(filmEntity);
+        final var savedFilmId = filmEntity.getId();
+        filmDto.getGenres()
+                .forEach(genreEntity -> {
+                    genreService.getGenreById(genreEntity.getId());
+                    findFilmById(savedFilmId);
+                    genreService.addGenreToFilm(genreEntity.getId(), savedFilmId);
+                });
+        filmEntity.setGenres(filmDto.getGenres());
+        return filmMapper.toDto(filmEntity);
     }
 
     @Override
-    public Film updateFilm(Film film) {
-        Long filmId = film.getId();
+    public FilmResponseDto updateFilm(FilmRequestDto filmDto) {
+        Long filmId = filmDto.getId();
         if (filmId == null || filmId == 0) {
             log.error("Film id cannot be null or zero for update operation");
             throw new RuntimeException();
         }
         findFilmById(filmId);
-        filmStorage.saveFilm(film);
-        return film;
+        Film film = filmStorage.saveFilm(filmMapper.toEntity(filmDto));;
+        return filmMapper.toDto(film);
     }
 
     @Override
-    public Film setLikeToSpecificFilmByUser(Long filmId, Long userId) {
-        Film film = findFilmById(filmId);
+    public void setLikeToSpecificFilmByUser(Long filmId, Long userId) {
+        findFilmById(filmId);
         userService.findUserById(userId);
-        film.getLikes().add(userId);
-        return film;
+        filmStorage.setLikeToSpecificFilmByUser(filmId, userId);
     }
 
     @Override
-    public Film removeLikeFromSpecificFilmByUser(Long filmId, Long userId) {
-        Film film = findFilmById(filmId);
+    public void removeLikeFromSpecificFilmByUser(Long filmId, Long userId) {
+        findFilmById(filmId);
         userService.findUserById(userId);
-        film.getLikes().remove(userId);
-        return film;
+        filmStorage.removeLikeFromSpecificFilmByUser(filmId, userId);
     }
 }

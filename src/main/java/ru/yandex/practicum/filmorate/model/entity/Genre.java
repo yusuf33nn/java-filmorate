@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Genre {
 
-    private Long id;
+    private Integer id;
     private String name;
 }

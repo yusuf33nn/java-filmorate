@@ -13,5 +13,9 @@ public interface FilmStorage {
 
     List<Film> showMostPopularFilms(Integer count);
 
-    void saveFilm(Film film);
+    Film saveFilm(Film film);
+
+    void setLikeToSpecificFilmByUser(Long filmId, Long userId);
+
+    void removeLikeFromSpecificFilmByUser(Long filmId, Long userId);
 }

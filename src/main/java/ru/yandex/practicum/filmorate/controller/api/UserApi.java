@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.controller.api;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.entity.User;
+import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 
 import java.util.List;
 
@@ -11,14 +12,14 @@ import java.util.List;
 public interface UserApi {
 
     @GetMapping
-    ResponseEntity<List<User>> showAllUsers();
+    ResponseEntity<List<UserResponseDto>> showAllUsers();
 
     @GetMapping("/{userId}")
-    ResponseEntity<User> findUserById(@PathVariable Long userId);
+    ResponseEntity<UserResponseDto> findUserById(@PathVariable Long userId);
 
     @PostMapping
-    ResponseEntity<User> createUser(@Valid @RequestBody User user);
+    ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto user);
 
     @PutMapping
-    ResponseEntity<User> updateUser(@Valid @RequestBody User user);
+    ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserRequestDto user);
 }

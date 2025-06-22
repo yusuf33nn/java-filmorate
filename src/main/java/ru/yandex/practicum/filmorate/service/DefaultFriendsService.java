@@ -56,7 +56,12 @@ public class DefaultFriendsService implements FriendsService {
 
     @Override
     public void addToFriends(Long userId, Long friendId) {
-        friendsStorage.addToFriends(userId, friendId);
+        userService.findUserById(userId);
+        userService.findUserById(friendId);
+        var insertedRows = friendsStorage.addToFriends(userId, friendId);
+        if (insertedRows != 1) {
+            throw new RuntimeException("Error while adding new friendship");
+        }
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface FriendsStorage {
 
     Set<User> showCommonFriends(Long userId, Long otherId);
 
-    User addToFriends(Long userId, Long friendId);
+    int addToFriends(Long userId, Long friendId);
 
-    User deleteFromFriends(Long userId, Long friendId);
+    void deleteFromFriends(Long userId, Long friendId);
 }
