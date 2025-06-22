@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.service.api;
 
-import ru.yandex.practicum.filmorate.model.entity.MpaRating;
+import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
 
 import java.util.List;
 
 public interface MpaRatingService {
 
-    List<MpaRating> getAllMpaRatings();
+    List<MpaDto> getAllMpaRatings();
 
-    MpaRating getMpaRatingById(int id);
+    MpaDto getMpaRatingById(int id);
 }

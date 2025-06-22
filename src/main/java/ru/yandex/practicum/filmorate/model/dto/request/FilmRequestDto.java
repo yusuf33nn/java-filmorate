@@ -7,10 +7,11 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.MinDate;
 import ru.yandex.practicum.filmorate.annotation.PositiveDuration;
+import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
 import ru.yandex.practicum.filmorate.model.entity.Genre;
-import ru.yandex.practicum.filmorate.model.entity.MpaRating;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Set;
 
 @Data
@@ -28,6 +29,6 @@ public class FilmRequestDto {
     @NotNull
     @PositiveDuration
     private Long duration;
-    private MpaRating mpa;
-    private Set<Genre> genres;
+    private MpaDto mpa;
+    private Set<Genre> genres = Collections.emptySet();
 }

@@ -64,6 +64,8 @@ CREATE TABLE IF NOT EXISTS film_like
     FOREIGN KEY (user_id) REFERENCES users (id)
     );
 
+CREATE INDEX idx_like_film_id ON film_like(film_id);
+
 CREATE TABLE IF NOT EXISTS genre
 (
     id   int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
+import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
 import ru.yandex.practicum.filmorate.service.api.GenreService;
@@ -38,9 +39,13 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public FilmResponseDto findFilmById(Long filmId) {
-        return filmStorage.findFilmById(filmId)
+        FilmResponseDto responseDto = filmStorage.findFilmById(filmId)
                 .map(filmMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Film with ID: '%d' is not found".formatted(filmId)));
+        MpaDto mpa = mpaRatingService.getMpaRatingById(responseDto.getMpa().getId());
+        responseDto.setMpa(mpa);
+        responseDto.setGenres(genreService.getGenresByFilmId(filmId));
+        return responseDto;
     }
 
     @Override
@@ -72,7 +77,7 @@ public class DefaultFilmService implements FilmService {
             throw new RuntimeException();
         }
         findFilmById(filmId);
-        Film film = filmStorage.saveFilm(filmMapper.toEntity(filmDto));;
+        Film film = filmStorage.updateFilm(filmMapper.toEntity(filmDto));
         return filmMapper.toDto(film);
     }
 

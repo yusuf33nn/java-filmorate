@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -26,7 +27,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> showMostPopularFilms(Integer count) {
+    public Set<Film> showMostPopularFilms(Integer count) {
         return films.values().stream()
                 .sorted((film1, film2) -> {
                     var film1Size = Optional.ofNullable(film1.getLikes()).map(Set::size).orElse(0);
@@ -34,13 +35,18 @@ public class InMemoryFilmStorage implements FilmStorage {
                     return Long.compare(film2Size, film1Size);
                 })
                 .limit(count)
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Film saveFilm(Film film) {
         films.put(film.getId(), film);
         return film;
+    }
+
+    @Override
+    public Film updateFilm(Film film) {
+        return null;
     }
 
     @Override

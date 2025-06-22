@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.model.entity.Film;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface FilmStorage {
 
@@ -11,9 +12,11 @@ public interface FilmStorage {
 
     Optional<Film> findFilmById(Long filmId);
 
-    List<Film> showMostPopularFilms(Integer count);
+    Set<Film> showMostPopularFilms(Integer count);
 
     Film saveFilm(Film film);
+
+    Film updateFilm(Film film);
 
     void setLikeToSpecificFilmByUser(Long filmId, Long userId);
 

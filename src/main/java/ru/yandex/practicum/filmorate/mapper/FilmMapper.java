@@ -1,12 +1,16 @@
 package ru.yandex.practicum.filmorate.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
 @Component
+@RequiredArgsConstructor
 public final class FilmMapper {
+
+    private final MpaMapper mpaMapper;
 
     public FilmResponseDto toDto(Film e) {
         return FilmResponseDto.builder()
@@ -15,7 +19,7 @@ public final class FilmMapper {
                 .description(e.getDescription())
                 .duration(e.getDuration())
                 .releaseDate(e.getReleaseDate())
-                .mpa(e.getMpa())
+                .mpa(mpaMapper.toDto(e.getMpa()))
                 .genres(e.getGenres())
                 .build();
     }
@@ -27,7 +31,7 @@ public final class FilmMapper {
                 .description(dto.getDescription())
                 .releaseDate(dto.getReleaseDate())
                 .duration(dto.getDuration())
-                .mpa(dto.getMpa())
+                .mpa(mpaMapper.toEntity(dto.getMpa()))
                 .build();
     }
 }

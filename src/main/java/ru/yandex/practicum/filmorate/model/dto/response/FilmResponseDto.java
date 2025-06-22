@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.model.dto.response;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.model.entity.Genre;
-import ru.yandex.practicum.filmorate.model.entity.MpaRating;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -21,7 +20,7 @@ public class FilmResponseDto {
     private String description;
     private LocalDate releaseDate;
     private Long duration;
-    private MpaRating mpa;
+    private MpaDto mpa;
     @Builder.Default
     private Set<Long> likes = Collections.emptySet();
     @Builder.Default

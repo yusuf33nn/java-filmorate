@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.yandex.practicum.filmorate.model.entity.MpaRating;
+import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import java.util.List;
 public interface MpaApi {
 
     @GetMapping
-    ResponseEntity<List<MpaRating>> showAllMpaRatings();
+    ResponseEntity<List<MpaDto>> showAllMpaRatings();
 
     @GetMapping("/{id}")
-    ResponseEntity<MpaRating> findMpaRatingById(@PathVariable Integer id);
+    ResponseEntity<MpaDto> findMpaRatingById(@PathVariable Integer id);
 }

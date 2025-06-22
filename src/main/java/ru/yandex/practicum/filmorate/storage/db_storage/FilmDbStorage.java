@@ -11,8 +11,10 @@ import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -36,8 +38,22 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> showMostPopularFilms(Integer count) {
-        return List.of();
+    public Set<Film> showMostPopularFilms(Integer count) {
+        String sql = """
+                   SELECT  f.*, l.like_count
+                     FROM    film f
+                     JOIN
+                            (SELECT film_id,
+                                    COUNT(fl.user_id) AS like_count
+                               FROM film_like as fl
+                           GROUP BY film_id
+                           ORDER BY like_count DESC
+                              LIMIT ?) l
+                       ON l.film_id = f.id
+                ORDER  BY l.like_count DESC, f.name;
+                """;
+
+        return new LinkedHashSet<>(jdbcTemplate.query(sql, filmRowMapper, count));
     }
 
     @Override
@@ -63,7 +79,31 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void setLikeToSpecificFilmByUser(Long filmId,  Long userId) {
+    public Film updateFilm(Film film) {
+        String sql = """
+                UPDATE FILM
+                   SET name          = ?,
+                       description   = ?,
+                       duration      = ?,
+                       release_date  = ?,
+                       mpa_rating_id = ?
+                 WHERE id            = ?
+                """;
+
+        // JdbcTemplate подставит параметры в PreparedStatement —
+        // безопасно от SQL-инъекций
+        jdbcTemplate.update(sql,
+                film.getName(),
+                film.getDescription(),
+                film.getDuration(),
+                film.getReleaseDate(),
+                film.getMpa().getId(),
+                film.getId());
+        return film;
+    }
+
+    @Override
+    public void setLikeToSpecificFilmByUser(Long filmId, Long userId) {
         String sql = "INSERT INTO FILM_LIKE (FILM_ID, USER_ID)  VALUES (?, ?)";
         jdbcTemplate.update(sql, filmId, userId);
     }
