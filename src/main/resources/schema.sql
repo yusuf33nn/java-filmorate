@@ -1,4 +1,4 @@
-CREATE TABLE if not exists users
+CREATE TABLE IF NOT EXISTS users
 (
     id       bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email    varchar(100) unique not null,
@@ -7,7 +7,7 @@ CREATE TABLE if not exists users
     birthday date
     );
 
-CREATE TABLE if not exists friendship
+CREATE TABLE IF NOT EXISTS friendship
 (
     requester_id bigint      NOT NULL,
     receiver_id bigint      NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE if not exists friendship
     );
 
 ALTER TABLE friendship
-    ADD CONSTRAINT check_friendship_status_name
+    ADD CONSTRAINT IF NOT EXISTS check_friendship_status_name
         CHECK (status IN ('PENDING', 'CONFIRMED'));
 
 CREATE TABLE IF NOT EXISTS mpa_rating
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS mpa_rating
     );
 
 ALTER TABLE mpa_rating
-    ADD CONSTRAINT check_mpa_rating_code
+    ADD CONSTRAINT IF NOT EXISTS check_mpa_rating_code
         CHECK (rating_code IN ('G', 'PG', 'PG-13', 'R', 'NC-17'));
 
 INSERT INTO mpa_rating (rating_code, rating_description)
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS film_like
     FOREIGN KEY (user_id) REFERENCES users (id)
     );
 
-CREATE INDEX idx_like_film_id ON film_like(film_id);
+CREATE INDEX IF NOT EXISTS idx_like_film_id ON film_like(film_id);
 
 CREATE TABLE IF NOT EXISTS genre
 (
