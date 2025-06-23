@@ -68,7 +68,7 @@ CREATE INDEX IF NOT EXISTS idx_like_film_id ON film_like (film_id);
 
 CREATE TABLE IF NOT EXISTS genre
 (
-    id   int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id   int PRIMARY KEY,
     name varchar(255) not null
 );
 
