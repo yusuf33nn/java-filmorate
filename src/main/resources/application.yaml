@@ -8,8 +8,10 @@ spring:
   sql:
     init:
       mode: always
-#
-#  h2:
-#    console:
-#      enabled: true
-#      path: /h2-console
+      platform: h2
+      encoding: UTF-8
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
