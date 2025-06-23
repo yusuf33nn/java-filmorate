@@ -56,7 +56,7 @@ public class DefaultFilmService implements FilmService {
     @Override
     public FilmResponseDto createFilm(FilmRequestDto filmDto) {
         Film filmEntity = filmMapper.toEntity(filmDto);
-        mpaRatingService.getMpaRatingById(filmEntity.getMpa().getId());
+        mpaRatingService.getMpaRatingById(filmDto.getMpa().getId());
         filmEntity = filmStorage.saveFilm(filmEntity);
         final var savedFilmId = filmEntity.getId();
         filmDto.getGenres()
