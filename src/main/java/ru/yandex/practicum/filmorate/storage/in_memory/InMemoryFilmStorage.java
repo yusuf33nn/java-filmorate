@@ -58,4 +58,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void removeLikeFromSpecificFilmByUser(Long filmId, Long userId) {
 
     }
+
+    @Override
+    public Set<Long> getFilmLikesByFilmId(Long filmId) {
+        return Set.of();
+    }
 }

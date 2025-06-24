@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.User;
@@ -29,7 +30,7 @@ public class DefaultFriendsService implements FriendsService {
     public Set<UserResponseDto> retrieveUsersFriends(Long userId) {
         userService.findUserById(userId);
         Set<User> userFriends = friendsStorage.retrieveUsersFriends(userId);
-        if (userFriends == null || userFriends.isEmpty()) {
+        if (CollectionUtils.isEmpty(userFriends)) {
             return Collections.emptySet();
         }
         return userFriends.stream().map(userMapper::toDto).collect(Collectors.toSet());

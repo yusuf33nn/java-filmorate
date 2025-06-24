@@ -90,8 +90,6 @@ public class FilmDbStorage implements FilmStorage {
                  WHERE id            = ?
                 """;
 
-        // JdbcTemplate подставит параметры в PreparedStatement —
-        // безопасно от SQL-инъекций
         jdbcTemplate.update(sql,
                 film.getName(),
                 film.getDescription(),
@@ -112,5 +110,11 @@ public class FilmDbStorage implements FilmStorage {
     public void removeLikeFromSpecificFilmByUser(Long filmId, Long userId) {
         String sql = "DELETE FROM FILM_LIKE WHERE FILM_ID = ? AND USER_ID = ?";
         jdbcTemplate.update(sql, filmId, userId);
+    }
+
+    @Override
+    public Set<Long> getFilmLikesByFilmId(Long filmId) {
+        String sql = "SELECT USER_ID FROM FILM_LIKE WHERE FILM_ID = ?";
+        return Set.copyOf(jdbcTemplate.queryForList(sql, Long.class, filmId));
     }
 }

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.controller.api;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
@@ -18,7 +20,10 @@ public interface FilmApi {
     ResponseEntity<FilmResponseDto> findFilmById(@PathVariable Long id);
 
     @GetMapping("/popular")
-    ResponseEntity<List<FilmResponseDto>> showMostPopularFilms(@RequestParam(name = "count", defaultValue = "10") int count);
+    ResponseEntity<List<FilmResponseDto>> showMostPopularFilms(@RequestParam(name = "count", defaultValue = "10")
+                                                               @Valid @Max(10000)
+                                                               @Positive(message = "Count должен быть больше 0")
+                                                               int count);
 
     @PostMapping
     ResponseEntity<FilmResponseDto> createFilm(@Valid @RequestBody FilmRequestDto film);

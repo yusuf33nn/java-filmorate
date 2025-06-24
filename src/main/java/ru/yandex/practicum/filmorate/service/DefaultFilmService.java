@@ -45,6 +45,7 @@ public class DefaultFilmService implements FilmService {
         MpaDto mpa = mpaRatingService.getMpaRatingById(responseDto.getMpa().getId());
         responseDto.setMpa(mpa);
         responseDto.setGenres(genreService.getGenresByFilmId(filmId));
+        responseDto.setLikes(filmStorage.getFilmLikesByFilmId(filmId));
         return responseDto;
     }
 

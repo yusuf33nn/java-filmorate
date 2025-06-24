@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
@@ -33,13 +31,13 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto user) {
+    public ResponseEntity<UserResponseDto> createUser(UserRequestDto user) {
         log.info("Request Body: {}", user);
         return ResponseEntity.status(CREATED).body(userService.createUser(user));
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserRequestDto user) {
+    public ResponseEntity<UserResponseDto> updateUser(UserRequestDto user) {
         log.info("Request Body: {}", user);
         var response = userService.updateUser(user);
         return ResponseEntity.ok(response);

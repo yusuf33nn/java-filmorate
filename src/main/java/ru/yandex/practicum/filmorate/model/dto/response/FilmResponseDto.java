@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.model.dto.response;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.filmorate.model.entity.Genre;
 
 import java.time.LocalDate;
@@ -13,16 +15,17 @@ import java.util.Set;
  */
 @Data
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmResponseDto {
 
-    private Long id;
-    private String name;
-    private String description;
-    private LocalDate releaseDate;
-    private Long duration;
-    private MpaDto mpa;
+    Long id;
+    String name;
+    String description;
+    LocalDate releaseDate;
+    Long duration;
+    MpaDto mpa;
     @Builder.Default
-    private Set<Long> likes = Collections.emptySet();
+    Set<Long> likes = Collections.emptySet();
     @Builder.Default
-    private Set<Genre> genres = Collections.emptySet();
+    Set<Genre> genres = Collections.emptySet();
 }

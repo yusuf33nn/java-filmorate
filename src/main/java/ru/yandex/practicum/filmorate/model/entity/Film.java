@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model.entity;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -16,16 +17,17 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"likes", "genres"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
 
-    private Long id;
-    private String name;
-    private String description;
-    private LocalDate releaseDate;
-    private Long duration;
-    private MpaRating mpa;
+    Long id;
+    String name;
+    String description;
+    LocalDate releaseDate;
+    Long duration;
+    MpaRating mpa;
     @Builder.Default
-    private Set<Long> likes = Collections.emptySet();
+    Set<Long> likes = Collections.emptySet();
     @Builder.Default
-    private Set<Genre> genres = Collections.emptySet();
+    Set<Genre> genres = Collections.emptySet();
 }

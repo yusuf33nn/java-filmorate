@@ -21,4 +21,6 @@ public interface FilmStorage {
     void setLikeToSpecificFilmByUser(Long filmId, Long userId);
 
     void removeLikeFromSpecificFilmByUser(Long filmId, Long userId);
+
+    Set<Long> getFilmLikesByFilmId(Long filmId);
 }

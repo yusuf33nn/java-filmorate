@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model.entity;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -13,13 +14,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"friends"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
 
-    private Long id;
-    private String email;
-    private String login;
-    private String name;
-    private LocalDate birthday;
+    Long id;
+    String email;
+    String login;
+    String name;
+    LocalDate birthday;
     @Builder.Default
-    private Set<Long> friends = Collections.emptySet();
+    Set<Long> friends = Collections.emptySet();
 }
