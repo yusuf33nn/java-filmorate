@@ -1,20 +1,17 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
+import ru.yandex.practicum.filmorate.service.api.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
@@ -24,45 +21,25 @@ public class UserController implements UserApi {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<List<User>> showAllUsers() {
+    public ResponseEntity<List<UserResponseDto>> showAllUsers() {
         return ResponseEntity.ok(userService.showAllUsers());
     }
 
     @Override
-    public ResponseEntity<User> findUserById(Long id) {
+    public ResponseEntity<UserResponseDto> findUserById(Long id) {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
     @Override
-    public ResponseEntity<Set<User>> retrieveUsersFriends(Long id) {
-        return ResponseEntity.ok(userService.retrieveUsersFriends(id));
-    }
-
-    @Override
-    public ResponseEntity<Set<User>> showCommonFriends(Long id, Long otherId) {
-        return ResponseEntity.ok(userService.showCommonFriends(id, otherId));
-    }
-
-    @Override
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserResponseDto> createUser(UserRequestDto user) {
         log.info("Request Body: {}", user);
         return ResponseEntity.status(CREATED).body(userService.createUser(user));
     }
 
     @Override
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserResponseDto> updateUser(UserRequestDto user) {
         log.info("Request Body: {}", user);
-        return ResponseEntity.ok(userService.updateUser(user));
-    }
-
-    @Override
-    public ResponseEntity<User> addToFriends(Long id, Long friendId) {
-        return ResponseEntity.ok(userService.addToFriends(id, friendId));
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteFromFriends(Long id, Long friendId) {
-        userService.deleteFromFriends(id, friendId);
-        return ResponseEntity.status(OK).build();
+        var response = userService.updateUser(user);
+        return ResponseEntity.ok(response);
     }
 }
