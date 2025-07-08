@@ -11,10 +11,7 @@ import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -120,11 +117,17 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> searchFilms(String query, Boolean searchByTitle) {
-        List<Film> films = List.of();
+        List<Film> films;
         if (searchByTitle){
-            films = jdbcTemplate.query("select * from film f where lower(f.name) like ? " +
-            " Order by (select count(*) from film_like where FILM_ID = f.ID) desc"                    ,
-                    new Object[]{"%" + query + "%"},filmRowMapper);
+            String sql = """
+            SELECT * 
+            FROM FILM f 
+            WHERE lower(f.name) like ? 
+            ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID) desc
+            """;
+            films = jdbcTemplate.query(sql,new Object[]{"%" + query + "%"},filmRowMapper);
+        } else {
+            films = Collections.emptyList();
         }
         return films;
     }
