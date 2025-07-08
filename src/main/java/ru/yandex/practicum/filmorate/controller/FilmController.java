@@ -36,6 +36,11 @@ public class FilmController implements FilmApi {
     }
 
     @Override
+    public ResponseEntity<List<FilmResponseDto>> searchFilms(String query, String by) {
+        return ResponseEntity.ok(filmService.searchFilms(query, by));
+    }
+
+    @Override
     public ResponseEntity<FilmResponseDto> createFilm(FilmRequestDto film) {
         log.info("Request Body: {}", film);
         return ResponseEntity.status(CREATED).body(filmService.createFilm(film));

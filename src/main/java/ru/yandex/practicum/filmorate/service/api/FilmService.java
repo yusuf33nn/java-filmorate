@@ -20,4 +20,6 @@ public interface FilmService {
     void setLikeToSpecificFilmByUser(Long filmId, Long userId);
 
     void removeLikeFromSpecificFilmByUser(Long filmId, Long userId);
+
+    List<FilmResponseDto> searchFilms(String query, String by);
 }

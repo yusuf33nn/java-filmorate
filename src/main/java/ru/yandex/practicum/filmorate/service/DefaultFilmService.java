@@ -95,4 +95,22 @@ public class DefaultFilmService implements FilmService {
         userService.findUserById(userId);
         filmStorage.removeLikeFromSpecificFilmByUser(filmId, userId);
     }
+
+    @Override
+    public List<FilmResponseDto> searchFilms(String query, String by) {
+        String[] searchBy = by.split(",");
+
+        boolean searchByTitle = false;
+
+        for (String s : searchBy) {
+            if (s.equalsIgnoreCase("title")) {
+                searchByTitle = true;
+            }
+        }
+
+        if (!searchByTitle) {
+            searchByTitle = true;
+        }
+        return filmStorage.searchFilms(query.toLowerCase(),searchByTitle).stream().map(filmMapper::toDto).toList();
+    }
 }

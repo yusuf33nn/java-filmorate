@@ -23,4 +23,6 @@ public interface FilmStorage {
     void removeLikeFromSpecificFilmByUser(Long filmId, Long userId);
 
     Set<Long> getFilmLikesByFilmId(Long filmId);
+
+    List<Film> searchFilms(String query, Boolean searchByTitle);
 }

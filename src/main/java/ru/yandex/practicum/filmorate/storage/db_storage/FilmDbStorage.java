@@ -117,4 +117,15 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT USER_ID FROM FILM_LIKE WHERE FILM_ID = ?";
         return Set.copyOf(jdbcTemplate.queryForList(sql, Long.class, filmId));
     }
+
+    @Override
+    public List<Film> searchFilms(String query, Boolean searchByTitle) {
+        List<Film> films = List.of();
+        if (searchByTitle){
+            films = jdbcTemplate.query("select * from film f where lower(f.name) like ? " +
+            " Order by (select count(*) from film_like where FILM_ID = f.ID) desc"                    ,
+                    new Object[]{"%" + query + "%"},filmRowMapper);
+        }
+        return films;
+    }
 }
