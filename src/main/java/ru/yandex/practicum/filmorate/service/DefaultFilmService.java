@@ -16,6 +16,7 @@ import ru.yandex.practicum.filmorate.service.api.MpaRatingService;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -94,5 +95,18 @@ public class DefaultFilmService implements FilmService {
         findFilmById(filmId);
         userService.findUserById(userId);
         filmStorage.removeLikeFromSpecificFilmByUser(filmId, userId);
+    }
+
+    @Override
+    public List<FilmResponseDto> searchFilms(String query, String by) {
+        String[] searchBy = by.split(",");
+
+        boolean searchByTitle = Arrays.stream(by.split(","))
+                .anyMatch(s -> s.trim().equalsIgnoreCase("title"));
+
+        if (!searchByTitle) {
+            searchByTitle = true;
+        }
+        return filmStorage.searchFilms(query.toLowerCase(),searchByTitle).stream().map(filmMapper::toDto).toList();
     }
 }

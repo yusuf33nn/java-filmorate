@@ -63,4 +63,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Set<Long> getFilmLikesByFilmId(Long filmId) {
         return Set.of();
     }
+
+    @Override
+    public List<Film> searchFilms(String query, Boolean searchByTitle) {
+        return List.of();
+    }
 }

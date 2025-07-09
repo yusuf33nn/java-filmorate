@@ -11,10 +11,7 @@ import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -116,5 +113,22 @@ public class FilmDbStorage implements FilmStorage {
     public Set<Long> getFilmLikesByFilmId(Long filmId) {
         String sql = "SELECT USER_ID FROM FILM_LIKE WHERE FILM_ID = ?";
         return Set.copyOf(jdbcTemplate.queryForList(sql, Long.class, filmId));
+    }
+
+    @Override
+    public List<Film> searchFilms(String query, Boolean searchByTitle) {
+        List<Film> films;
+        if (searchByTitle){
+            String sql = """
+            SELECT * 
+            FROM FILM f 
+            WHERE f.name ilike ? 
+            ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID) desc
+            """;
+            films = jdbcTemplate.query(sql,new Object[]{"%" + query + "%"},filmRowMapper);
+        } else {
+            films = Collections.emptyList();
+        }
+        return films;
     }
 }
