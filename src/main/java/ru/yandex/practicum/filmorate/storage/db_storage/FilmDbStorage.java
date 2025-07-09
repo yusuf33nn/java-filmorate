@@ -122,7 +122,7 @@ public class FilmDbStorage implements FilmStorage {
             String sql = """
             SELECT * 
             FROM FILM f 
-            WHERE lower(f.name) like ? 
+            WHERE f.name ilike ? 
             ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID) desc
             """;
             films = jdbcTemplate.query(sql,new Object[]{"%" + query + "%"},filmRowMapper);
