@@ -89,3 +89,29 @@ CREATE TABLE IF NOT EXISTS film_genre
     FOREIGN KEY (film_id) REFERENCES film (id),
     FOREIGN KEY (genre_id) REFERENCES genre (id)
 );
+
+CREATE TABLE IF NOT EXISTS reviews
+(
+    id       	bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    content  	varchar(500),
+    isPositive	boolean,
+    user_id 	bigint not NULL,
+    film_id  	bigint not null,
+    useful		int DEFAULT 0,
+	FOREIGN KEY (film_id) REFERENCES film (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS reviews_grades
+(
+	review_id   bigint not NULL,
+    user_id 	bigint not NULL,
+    grade		int,
+    PRIMARY KEY (review_id, user_id),
+	FOREIGN KEY (review_id) REFERENCES reviews (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+
+
+
