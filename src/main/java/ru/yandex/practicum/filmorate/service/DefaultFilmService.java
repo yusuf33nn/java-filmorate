@@ -95,4 +95,12 @@ public class DefaultFilmService implements FilmService {
         userService.findUserById(userId);
         filmStorage.removeLikeFromSpecificFilmByUser(filmId, userId);
     }
+
+    @Override
+    public List<FilmResponseDto> findCommonFilms(Long userId, Long friendId) {
+        return filmStorage.findCommon(userId, friendId).stream()
+                .map(filmMapper::toDto)
+                .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
+                .toList();
+    }
 }

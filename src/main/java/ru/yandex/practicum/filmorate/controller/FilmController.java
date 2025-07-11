@@ -58,4 +58,9 @@ public class FilmController implements FilmApi {
         filmService.removeLikeFromSpecificFilmByUser(id, userId);
         return ResponseEntity.ok().build();
     }
+
+    @Override
+    public ResponseEntity<List<FilmResponseDto>> showCommonFilms(Long userId, Long friendId) {
+        return ResponseEntity.ok(filmService.findCommonFilms(userId, friendId));
+    }
 }
