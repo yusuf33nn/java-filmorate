@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller.api;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,4 +28,19 @@ public interface ReviewApi {
 
     @GetMapping
     ResponseEntity<List<ReviewResponseDto>> findReviewByFilm(@RequestParam(defaultValue = "-1")  Long filmId, @RequestParam(defaultValue = "10") Long count);
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void>  deleteReview(@Valid @PathVariable Long id);
+
+    @PutMapping("/{reviewId}/like/{userId}")
+    ResponseEntity<Void> addReviewLike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
+
+    @PutMapping("/{reviewId}/dislike/{userId}")
+    ResponseEntity<Void> addReviewDislike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
+
+    @DeleteMapping("/{reviewId}/like/{userId}")
+    ResponseEntity<Void> deleteReviewLike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
+
+    @DeleteMapping("/{reviewId}/dislike/{userId}")
+    ResponseEntity<Void> DeleteReviewDislike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
 }

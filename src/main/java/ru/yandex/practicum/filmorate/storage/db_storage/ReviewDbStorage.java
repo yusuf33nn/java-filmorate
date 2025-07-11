@@ -23,7 +23,7 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public Review saveReview(Review review) {
-        String sql = "INSERT INTO PUBLIC.REVIEWS (CONTENT, ISPOSITIVE, USER_ID, FILM_ID) " +
+        String sql = "INSERT INTO REVIEWS (CONTENT, ISPOSITIVE, USER_ID, FILM_ID) " +
                 "VALUES (?, ?, ?, ?)";
         GeneratedKeyHolder kh = new GeneratedKeyHolder();
 
@@ -78,5 +78,63 @@ public class ReviewDbStorage implements ReviewStorage {
             sql += " where film_id = " + filmId;
         sql += " limit " + count;
         return jdbcTemplate.query(sql, reviewRowMapper);
+    }
+
+    @Override
+    public void deleteReview(Long reviewId) {
+        jdbcTemplate.update("DELETE FROM reviews WHERE id = ?", reviewId);
+    }
+
+    @Override
+    public void addReviewLike(Long reviewId, Long userId) {
+        String sql = "MERGE INTO reviews_grades (REVIEW_ID, USER_ID, grade) " +
+                "VALUES (?, ?, 1)";
+
+        jdbcTemplate.update(sql,
+                reviewId,
+                userId);
+        calculateReviewGrade(reviewId);
+    }
+
+    @Override
+    public void addReviewDislike(Long reviewId, Long userId) {
+        String sql = "MERGE INTO reviews_grades (REVIEW_ID, USER_ID, GRADE) " +
+                "VALUES (?, ?, -1)";
+
+        jdbcTemplate.update(sql,
+                reviewId,
+                userId);
+        calculateReviewGrade(reviewId);
+    }
+
+    @Override
+    public void deleteReviewLike(Long reviewId, Long userId){
+        String sql = "DELETE FROM reviews_grades WHERE REVIEW_ID = ? AND USER_ID = ? and GRADE = 1";
+        jdbcTemplate.update(sql,
+                reviewId,
+                userId);
+        calculateReviewGrade(reviewId);
+    }
+
+    @Override
+    public void deleteReviewDislike(Long reviewId, Long userId) {
+        String sql = "DELETE FROM reviews_grades WHERE REVIEW_ID = ? AND USER_ID = ? and GRADE = -1";
+        jdbcTemplate.update(sql,
+                reviewId,
+                userId);
+        calculateReviewGrade(reviewId);
+    }
+
+
+    void calculateReviewGrade(Long reviewId) {
+        String sql = """
+                UPDATE REVIEWS
+                	SET useful	=   (SELECT sum(grade)
+                						FROM reviews_grades
+                					 WHERE review_id  = REVIEWS.id)
+                 WHERE id            = ?
+                """;
+
+        jdbcTemplate.update(sql, reviewId);
     }
 }

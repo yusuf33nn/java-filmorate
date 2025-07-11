@@ -40,4 +40,35 @@ public class ReviewController implements ReviewApi {
     public ResponseEntity<List<ReviewResponseDto>> findReviewByFilm(Long filmId, Long count) {
         return ResponseEntity.ok(reviewService.findReviewByFilm(filmId, count));
     }
+
+    @Override
+    public ResponseEntity<Void> deleteReview(Long id) {
+       reviewService.deleteReview(id);
+       return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> addReviewLike(Long reviewId, Long userId) {
+        reviewService.addReviewLike(reviewId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> addReviewDislike(Long reviewId, Long userId) {
+        reviewService.addReviewDislike(reviewId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteReviewLike(Long reviewId, Long userId) {
+        reviewService.deleteReviewLike(reviewId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> DeleteReviewDislike(Long reviewId, Long userId) {
+        reviewService.deleteReviewDislike(reviewId, userId);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -63,4 +63,71 @@ public class DefaultReviewService implements ReviewService {
                 .map(reviewMapper::toDto)
                 .toList();
     }
+
+    @Override
+    public void deleteReview(Long reviewId) {
+        reviewStorage.deleteReview(reviewId);
+    }
+
+    @Override
+    public void addReviewLike(Long reviewId, Long userId) {
+
+        if (reviewId == null || reviewId == 0) {
+            log.error("Review id cannot be null or zero for addReviewLike operation");
+            throw new RuntimeException();
+        }
+        if (userId == null || userId == 0) {
+            log.error("UserId cannot be null or zero for addReviewLike operation");
+            throw new RuntimeException();
+        }
+        userService.findUserById(userId);
+        findReviewById(reviewId);
+        reviewStorage.addReviewLike(reviewId, userId);
+    }
+
+    @Override
+    public void addReviewDislike(Long reviewId, Long userId) {
+
+        if (reviewId == null || reviewId == 0) {
+            log.error("Review id cannot be null or zero for addReviewDislike operation");
+            throw new RuntimeException();
+        }
+        if (userId == null || userId == 0) {
+            log.error("UserId cannot be null or zero for addReviewDislike operation");
+            throw new RuntimeException();
+        }
+        userService.findUserById(userId);
+        findReviewById(reviewId);
+        reviewStorage.addReviewDislike(reviewId, userId);
+    }
+
+    @Override
+    public void deleteReviewLike(Long reviewId, Long userId) {
+        if (reviewId == null || reviewId == 0) {
+            log.error("Review id cannot be null or zero for deleteReviewLike operation");
+            throw new RuntimeException();
+        }
+        if (userId == null || userId == 0) {
+            log.error("UserId cannot be null or zero for deleteReviewLike operation");
+            throw new RuntimeException();
+        }
+        userService.findUserById(userId);
+        findReviewById(reviewId);
+        reviewStorage.deleteReviewLike(reviewId, userId);
+    }
+
+    @Override
+    public void deleteReviewDislike(Long reviewId, Long userId) {
+        if (reviewId == null || reviewId == 0) {
+            log.error("Review id cannot be null or zero for deleteReviewDislike operation");
+            throw new RuntimeException();
+        }
+        if (userId == null || userId == 0) {
+            log.error("UserId cannot be null or zero for deleteReviewDislike operation");
+            throw new RuntimeException();
+        }
+        userService.findUserById(userId);
+        findReviewById(reviewId);
+        reviewStorage.deleteReviewDislike(reviewId, userId);
+    }
 }

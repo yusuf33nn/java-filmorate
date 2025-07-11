@@ -14,5 +14,6 @@ public class ReviewResponseDto {
     Boolean isPositive;
     Long userId;
     Long filmId;
+    Integer useful;
 }
 

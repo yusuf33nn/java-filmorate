@@ -23,5 +23,6 @@ public class ReviewRequestDto {
     Long userId;
     @NotNull
     Long filmId;
+    Integer iseful = 0;
 }
 

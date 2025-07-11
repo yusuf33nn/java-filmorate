@@ -106,11 +106,12 @@ CREATE TABLE IF NOT EXISTS reviews_grades
 (
 	review_id   bigint not NULL,
     user_id 	bigint not NULL,
-    grade		int,
+    grade 	int,
     PRIMARY KEY (review_id, user_id),
 	FOREIGN KEY (review_id) REFERENCES reviews (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
 
 
 

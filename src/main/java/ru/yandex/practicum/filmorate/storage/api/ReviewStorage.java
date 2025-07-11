@@ -14,4 +14,14 @@ public interface ReviewStorage {
     Optional<Review> findReviewById(Long reviewId);
 
     List<Review> findReviewByFilm(Long filmId, Long count);
+
+    void deleteReview(Long reviewId);
+
+    void addReviewLike(Long reviewId, Long userId);
+
+    void addReviewDislike(Long reviewId, Long userId);
+
+    void deleteReviewLike(Long reviewId, Long userId);
+
+    void deleteReviewDislike(Long reviewId, Long userId);
 }

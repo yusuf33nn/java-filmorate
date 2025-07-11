@@ -11,5 +11,6 @@ public class Review {
     Boolean isPositive;
     Long userId;
     Long filmId;
-    Integer usentful;
+    @Builder.Default
+    Integer useful = 0;
 }
