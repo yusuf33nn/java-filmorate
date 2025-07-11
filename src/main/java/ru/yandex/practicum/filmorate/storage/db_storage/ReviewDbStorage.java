@@ -76,7 +76,7 @@ public class ReviewDbStorage implements ReviewStorage {
         String sql = "select * from reviews ";
         if (filmId >= 0)
             sql += " where film_id = " + filmId;
-        sql += " limit " + count;
+        sql += " order by useful  limit " + count;
         return jdbcTemplate.query(sql, reviewRowMapper);
     }
 
@@ -137,4 +137,6 @@ public class ReviewDbStorage implements ReviewStorage {
 
         jdbcTemplate.update(sql, reviewId);
     }
+
+
 }
