@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.api;
 
+import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
+import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
 import java.util.List;
@@ -12,7 +14,7 @@ public interface FilmStorage {
 
     Optional<Film> findFilmById(Long filmId);
 
-    Set<Film> showMostPopularFilms(Integer count);
+    List<Film> showMostPopularFilms(Integer count);
 
     Film saveFilm(Film film);
 
@@ -24,5 +26,9 @@ public interface FilmStorage {
 
     Set<Long> getFilmLikesByFilmId(Long filmId);
 
-    List<Film> searchFilms(String query, Boolean searchByTitle);
+    List<Film> searchFilms(String query, Boolean searchByTitle, Boolean searchByDirector);
+
+    List<Film> findFilmsByDirector(Long directorId, String sortBy);
+
+//    Set<Film> searchFilmsByLikes(Long directorId);
 }

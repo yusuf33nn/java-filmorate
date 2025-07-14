@@ -22,4 +22,6 @@ public interface FilmService {
     void removeLikeFromSpecificFilmByUser(Long filmId, Long userId);
 
     List<FilmResponseDto> searchFilms(String query, String by);
+
+    List<FilmResponseDto> searchFilmsByDirector(Long id, String by);
 }

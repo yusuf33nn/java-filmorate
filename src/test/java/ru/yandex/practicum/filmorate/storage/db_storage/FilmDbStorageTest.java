@@ -45,7 +45,7 @@ class FilmDbStorageTest {
     @Test
     void searchFilms1() {
 
-        List<Film> films = storage.searchFilms("taxi",true);
+        List<Film> films = storage.searchFilms("taxi",true, true);
         assertNotNull(films);
         assertTrue(films.size() > 0);
     }

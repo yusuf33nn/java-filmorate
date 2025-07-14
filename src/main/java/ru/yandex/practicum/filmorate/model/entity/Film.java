@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -30,4 +32,6 @@ public class Film {
     Set<Long> likes = Collections.emptySet();
     @Builder.Default
     Set<Genre> genres = Collections.emptySet();
+    @Builder.Default
+    Set<Director> directors = Collections.emptySet();
 }

@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
+import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.model.entity.Film;
+import ru.yandex.practicum.filmorate.service.api.DirectorService;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
 import ru.yandex.practicum.filmorate.service.api.GenreService;
 import ru.yandex.practicum.filmorate.service.api.MpaRatingService;
@@ -18,6 +21,8 @@ import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,6 +35,8 @@ public class DefaultFilmService implements FilmService {
     private final FilmMapper filmMapper;
     private final GenreService genreService;
     private final MpaRatingService mpaRatingService;
+    private final DirectorService directorService;
+    private final DirectorMapper directorMapper;
 
     @Override
     public List<FilmResponseDto> findAllFilms() {
@@ -68,6 +75,8 @@ public class DefaultFilmService implements FilmService {
                     genreService.addGenreToFilm(genreEntity.getId(), savedFilmId);
                 });
         filmEntity.setGenres(filmDto.getGenres());
+        log.info("Film created: {}", filmEntity);
+        log.info("FilmMapper.toDto(filmEntity): {}", filmMapper.toDto(filmEntity));
         return filmMapper.toDto(filmEntity);
     }
 
@@ -99,14 +108,61 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public List<FilmResponseDto> searchFilms(String query, String by) {
-        String[] searchBy = by.split(",");
 
-        boolean searchByTitle = Arrays.stream(by.split(","))
-                .anyMatch(s -> s.trim().equalsIgnoreCase("title"));
+        Set<String> titleByDirector = Arrays.stream(by.split(","))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
 
-        if (!searchByTitle) {
+        boolean searchByTitle = titleByDirector.contains("title");
+        boolean searchByDirector = titleByDirector.contains("director");
+
+        if (!searchByTitle || !searchByDirector) {
             searchByTitle = true;
+            searchByDirector = true;
         }
-        return filmStorage.searchFilms(query.toLowerCase(),searchByTitle).stream().map(filmMapper::toDto).toList();
+log.info("searchFilms(String query, String by): "+filmStorage.searchFilms(query.toLowerCase(),searchByTitle,searchByDirector));
+        List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(),searchByTitle,searchByDirector)
+                .stream()
+                .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
+                .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId()).stream().map(directorMapper::toDto).collect(Collectors.toSet())))
+                .map(filmMapper::toDto).toList();
+        log.info("Films found filmResponseDto: {}", filmResponseDto);
+        return filmResponseDto;
+    }
+
+    @Override
+    public List<FilmResponseDto> searchFilmsByDirector(Long directorId, String sortBy) {
+
+        Set<String> sortByYearLikes = Arrays.stream(sortBy.split(","))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
+
+        Set<Director> directors = directorService.findDirectorsByDirectorId(directorId)
+                .stream()
+                .map(directorMapper::toDto)
+                .collect(Collectors.toSet());
+
+        boolean sortByYear = sortByYearLikes.contains("year");
+        boolean sortByLikes = sortByYearLikes.contains("likes");
+        List<FilmResponseDto> filmResponseDto = List.of();
+        if (sortByYear) {
+            filmResponseDto = filmStorage.findFilmsByDirector(directorId,"year").stream()
+                    .map(filmMapper::toDto)
+                    .peek(film -> {
+                        film.setDirectors(directors);
+                    })
+                    .toList();
+            log.info("Film search by director: " + filmResponseDto);
+        }
+        if (sortByLikes) {
+            filmResponseDto = filmStorage.findFilmsByDirector(directorId,"likes").stream().map(filmMapper::toDto)
+                    .peek(film -> {
+                        film.setDirectors(directors);
+                    }).toList();
+            log.info("Film search by director: " + filmResponseDto);
+        }
+        return filmResponseDto;
     }
 }
