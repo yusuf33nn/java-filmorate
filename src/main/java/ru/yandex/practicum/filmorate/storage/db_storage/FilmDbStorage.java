@@ -211,32 +211,32 @@ public class FilmDbStorage implements FilmStorage {
 
         if (searchByTitle && searchByDirector) {
             sql = """
-                    SELECT f.* 
-                    FROM FILM f 
+                    SELECT f.*
+                    FROM FILM f
                         LEFT JOIN FILM_DIRECTOR fd ON f.id = fd.film_id
                         LEFT JOIN DIRECTORS d ON fd.DIRECTOR_id = d.id
-                    WHERE f.NAME ILIKE ? OR d.NAME ILIKE ? 
-                    ORDER BY 
+                    WHERE f.NAME ILIKE ? OR d.NAME ILIKE ?
+                    ORDER BY
                         (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID)
                     """;
             return jdbcTemplate.query(sql, new Object[]{"%" + query + "%", "%" + query + "%"}, filmRowMapper);
         }
         if (searchByTitle) {
             sql = """
-                    SELECT * 
-                    FROM FILM f 
-                    WHERE f.name ILIKE ? 
+                    SELECT *
+                    FROM FILM f
+                    WHERE f.name ILIKE ?
                     ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID)
                     """;
             return jdbcTemplate.query(sql, new Object[]{"%" + query + "%"}, filmRowMapper);
         }
         if (searchByDirector) {
             sql = """
-                    SELECT f.* 
-                    FROM FILM f 
+                    SELECT f.*
+                    FROM FILM f
                     LEFT JOIN FILM_DIRECTOR fd ON f.id = fd.film_id
                     LEFT JOIN DIRECTORS d ON fd.DIRECTOR_id = d.id
-                    WHERE d.name ILIKE ? 
+                    WHERE d.name ILIKE ?
                     ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID)
                     """;
             return jdbcTemplate.query(sql, new Object[]{"%" + query + "%"}, filmRowMapper);
@@ -253,11 +253,11 @@ public class FilmDbStorage implements FilmStorage {
         String sql;
         if ("year".equals(sortBy)) {
             sql = """
-                    SELECT f.*                           
+                    SELECT f.*
                     FROM film f
                     JOIN film_director fd ON f.id = fd.film_id
                     WHERE fd.director_id = ?
-                    ORDER BY f.release_date ASC
+                    ORDER BY f.release_date
                     """;
             return jdbcTemplate.query(sql, filmRowMapper, directorId);
         } else if ("likes".equals(sortBy)) {
@@ -268,7 +268,7 @@ public class FilmDbStorage implements FilmStorage {
                     LEFT JOIN film_like fl ON f.id = fl.film_id
                     WHERE fd.director_id = ?
                     GROUP BY f.id
-                    ORDER BY like_count desc 
+                    ORDER BY like_count desc
                     """;
             return jdbcTemplate.query(sql, filmRowMapper, directorId);
         } else {
