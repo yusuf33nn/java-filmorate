@@ -53,8 +53,8 @@ public class DirectorDbStorage implements DirectorStorage {
             PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, director.getName());
             return ps;
-        },kh);
-        var generatedId =  Optional.ofNullable(kh.getKey())
+        }, kh);
+        var generatedId = Optional.ofNullable(kh.getKey())
                 .map(Number::longValue)
                 .orElseThrow(() -> new RuntimeException("Id is not created"));
         director.setId(generatedId);
@@ -73,10 +73,10 @@ public class DirectorDbStorage implements DirectorStorage {
         director.setName(director.getName());
 
         String sql = """
-                     UPDATE DIRECTORS
-                     SET name = ? 
-                     WHERE id = ?
-                     """;
+                UPDATE DIRECTORS
+                SET name = ? 
+                WHERE id = ?
+                """;
         jdbcTemplate.update(sql,
                 director.getName(),
                 director.getId());
@@ -90,7 +90,9 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public Collection<Director> findDirectorsByParams(Collection<Long> params) {
-        if (params.isEmpty()) {return new ArrayList<>();}
+        if (params.isEmpty()) {
+            return new ArrayList<>();
+        }
         String sql = "SELECT * FROM directors WHERE id IN (:ids) ORDER BY id ";
 
         SqlParameterSource parameters = new MapSqlParameterSource("ids", params);

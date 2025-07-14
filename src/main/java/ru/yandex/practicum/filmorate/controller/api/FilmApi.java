@@ -24,6 +24,7 @@ public interface FilmApi {
                                                                @Valid @Max(10000)
                                                                @Positive(message = "Count должен быть больше 0")
                                                                int count);
+
     @GetMapping("/search")
     ResponseEntity<List<FilmResponseDto>> searchFilms(@RequestParam(name = "query", defaultValue = "") String query, @RequestParam(defaultValue = "title") String by);
 

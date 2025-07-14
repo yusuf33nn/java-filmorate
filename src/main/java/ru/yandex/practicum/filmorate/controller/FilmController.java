@@ -39,7 +39,7 @@ public class FilmController implements FilmApi {
 
     @Override
     public ResponseEntity<List<FilmResponseDto>> searchFilms(String query, String by) {
-        log.info("searchFilms: {} {}", query,by);
+        log.info("searchFilms: {} {}", query, by);
         return ResponseEntity.ok(filmService.searchFilms(query, by));
     }
 
