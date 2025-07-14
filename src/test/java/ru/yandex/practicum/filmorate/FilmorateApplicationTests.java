@@ -20,6 +20,7 @@ import ru.yandex.practicum.filmorate.storage.db_storage.UserDbStorage;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,13 +35,15 @@ class FilmorateApplicationTests {
     private final ReviewDbStorage reviewStorage;
     private final UserDbStorage userStorage;
     private final FilmDbStorage filmStorage;
+    private final Random random = new Random();
 
     @Test
     public void testCreateUpdateDeleteReview() {
+
         User user = User.builder()
-                .name("user1")
-                .login("userLogin1")
-                .email("test@test.ru")
+                .name("user" + random.nextInt())
+                .login("userLogin" + random.nextInt())
+                .email("test" + random.nextInt()+ "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user = userStorage.saveUser(user);
@@ -89,17 +92,17 @@ class FilmorateApplicationTests {
     @Test
     public void testFindReviewByFilm() {
         User user1 = User.builder()
-                .name("user1")
-                .login("userLogin1")
-                .email("test1@test.ru")
+                .name("user" + random.nextInt())
+                .login("userLogin" + random.nextInt())
+                .email("test" + random.nextInt()+ "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
 
         User user2 = User.builder()
-                .name("user2")
-                .login("userLogin2")
-                .email("test2@test.ru")
+                .name("user" + random.nextInt())
+                .login("userLogin" + random.nextInt())
+                .email("test" + random.nextInt()+ "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user2 = userStorage.saveUser(user2);
@@ -145,9 +148,9 @@ class FilmorateApplicationTests {
                 .build();
         film = filmStorage.saveFilm(film);
         User user1 = User.builder()
-                .name("user1")
-                .login("userLogin1")
-                .email("test1@test.ru")
+                .name("user" + random.nextInt())
+                .login("userLogin" + random.nextInt())
+                .email("test" + random.nextInt()+ "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
@@ -183,9 +186,9 @@ class FilmorateApplicationTests {
                 .build();
         film = filmStorage.saveFilm(film);
         User user1 = User.builder()
-                .name("user1")
-                .login("userLogin1")
-                .email("test1@test.ru")
+                .name("user" + random.nextInt())
+                .login("userLogin" + random.nextInt())
+                .email("test" + random.nextInt()+ "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
@@ -221,9 +224,9 @@ class FilmorateApplicationTests {
                 .build();
         film = filmStorage.saveFilm(film);
         User user1 = User.builder()
-                .name("user1")
-                .login("userLogin1")
-                .email("test1@test.ru")
+                .name("user"  + random.nextInt())
+                .login("userLogin "  + random.nextInt())
+                .email("test" + random.nextInt()+ "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
