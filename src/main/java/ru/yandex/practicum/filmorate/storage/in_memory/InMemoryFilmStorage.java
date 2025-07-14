@@ -27,7 +27,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Set<Film> showMostPopularFilms(Integer count) {
+    public List<Film> showMostPopularFilms(Integer count) {
         return films.values().stream()
                 .sorted((film1, film2) -> {
                     var film1Size = Optional.ofNullable(film1.getLikes()).map(Set::size).orElse(0);
@@ -35,7 +35,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                     return Long.compare(film2Size, film1Size);
                 })
                 .limit(count)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override

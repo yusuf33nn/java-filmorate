@@ -12,7 +12,7 @@ public interface FilmStorage {
 
     Optional<Film> findFilmById(Long filmId);
 
-    Set<Film> showMostPopularFilms(Integer count);
+    List<Film> showMostPopularFilms(Integer count);
 
     Film saveFilm(Film film);
 
