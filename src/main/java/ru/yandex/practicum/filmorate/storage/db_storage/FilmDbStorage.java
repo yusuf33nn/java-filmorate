@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.db_storage;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
@@ -117,4 +119,31 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT USER_ID FROM FILM_LIKE WHERE FILM_ID = ?";
         return Set.copyOf(jdbcTemplate.queryForList(sql, Long.class, filmId));
     }
+
+    @Override
+    public void removeFilmById(Long filmId) {
+        try {
+            if (!filmExists(filmId)) {
+                throw new NotFoundException("Фильм с ID " + filmId + " не найден");
+            }
+
+            jdbcTemplate.update("DELETE FROM film_genre WHERE film_id = ?", filmId);
+
+            jdbcTemplate.update("DELETE FROM film_like WHERE film_id = ?", filmId);
+
+            jdbcTemplate.update("DELETE FROM film WHERE id = ?", filmId);
+
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Ошибка при удалении фильма: " + e.getMessage(), e);
+        }
+    }
+
+    private boolean filmExists(Long filmId) {
+        String sql = "SELECT COUNT(*) FROM film WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, filmId) > 0;
+    }
+
+
 }

@@ -26,4 +26,5 @@ public class UserRequestDto {
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate birthday;
+    Integer likesCount;
 }

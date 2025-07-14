@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
+import ru.yandex.practicum.filmorate.model.entity.Film;
 
 import java.util.List;
 
@@ -22,4 +23,10 @@ public interface UserApi {
 
     @PutMapping
     ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserRequestDto user);
+
+    @GetMapping("/{userId}/recommendations")
+    ResponseEntity<List<Film>> getRecommendations(@PathVariable Long userId);
+
+    @DeleteMapping("/{userId}")
+    ResponseEntity<UserResponseDto> removeUserById(@PathVariable Long userId);
 }

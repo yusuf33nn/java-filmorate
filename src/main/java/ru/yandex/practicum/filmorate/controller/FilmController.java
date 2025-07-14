@@ -58,4 +58,10 @@ public class FilmController implements FilmApi {
         filmService.removeLikeFromSpecificFilmByUser(id, userId);
         return ResponseEntity.ok().build();
     }
+
+    @Override
+    public ResponseEntity<FilmResponseDto> removeFilmById(Long id) {
+        filmService.removeFilmById(id);
+        return ResponseEntity.ok().build();
+    }
 }

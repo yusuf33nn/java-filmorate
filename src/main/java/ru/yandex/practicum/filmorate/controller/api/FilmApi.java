@@ -36,4 +36,6 @@ public interface FilmApi {
 
     @DeleteMapping("/{id}/like/{userId}")
     ResponseEntity<Void> removeLikeFromSpecificFilmByUser(@PathVariable Long id, @PathVariable Long userId);
+
+    @DeleteMapping("/{id}") ResponseEntity<FilmResponseDto> removeFilmById(@PathVariable Long id);
 }

@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
+import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.UserStorage;
 
@@ -73,4 +74,12 @@ public class DefaultUserService implements UserService {
     public void deleteUser(Long userId) {
         userStorage.deleteUser(userId);
     }
+
+    @Override
+    public List<Film> getRecommendations(Long userId) {
+        return userStorage.getTopRecommendations(userId);
+    }
+
+    @Override
+    public void removeUserById(Long userId) {userStorage.removeUserById(userId);}
 }

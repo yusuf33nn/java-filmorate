@@ -95,4 +95,9 @@ public class DefaultFilmService implements FilmService {
         userService.findUserById(userId);
         filmStorage.removeLikeFromSpecificFilmByUser(filmId, userId);
     }
+
+    @Override
+    public void removeFilmById(Long filmID){
+        filmStorage.removeFilmById(filmID);
+    }
 }
