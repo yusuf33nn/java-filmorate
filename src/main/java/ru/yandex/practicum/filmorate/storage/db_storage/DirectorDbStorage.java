@@ -72,11 +72,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
         director.setName(director.getName());
 
-        String sql = """
-                UPDATE DIRECTORS
-                SET name = ? 
-                WHERE id = ?
-                """;
+        String sql = "UPDATE DIRECTORS SET name = ? WHERE id = ?";
         jdbcTemplate.update(sql,
                 director.getName(),
                 director.getId());
@@ -103,21 +99,17 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public List<Director> findDirectorsByDirectorId(Long directorId) {
 
-        String sql = """
-                SELECT D.* FROM FILM_DIRECTOR fd
-                INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID         
-                WHERE d.ID = ?
-                """;
+        String sql = "SELECT D.* FROM FILM_DIRECTOR fd " +
+                " INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID " +
+                " WHERE d.ID = ? ";
         return jdbcTemplate.query(sql, directorRowMapper, directorId);
     }
 
     @Override
     public List<Director> findDirectorsByFilmId(Long filmId) {
-        String sql = """
-                SELECT D.* FROM FILM_DIRECTOR fd
-                INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID         
-                WHERE fd.FILM_ID = ?
-                """;
+        String sql = "SELECT D.* FROM FILM_DIRECTOR fd " +
+                " INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID " +
+                " WHERE fd.FILM_ID = ? ";
         return jdbcTemplate.query(sql, directorRowMapper, filmId);
     }
 }

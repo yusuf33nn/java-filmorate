@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.api;
 
-import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
-import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
 import java.util.List;

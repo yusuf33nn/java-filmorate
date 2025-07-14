@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.db_storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -15,13 +14,10 @@ import ru.yandex.practicum.filmorate.storage.api.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -44,9 +40,9 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query("select * from film", filmRowMapper)
                 .stream()
                 .peek(film -> {
-                                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-                                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
-                                    film.setLikes(getFilmLikesByFilmId(film.getId()));
+                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+                    film.setLikes(getFilmLikesByFilmId(film.getId()));
                 })
                 .collect(Collectors.toList());
     }
@@ -67,15 +63,15 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> showMostPopularFilms(Integer count) {
         String sql = """
-                   SELECT  f.*, l.like_count
-                     FROM    film f
-                     JOIN
-                            (SELECT film_id,
-                                    COUNT(fl.user_id) AS like_count
-                               FROM film_like as fl
-                           GROUP BY film_id
-                           ORDER BY like_count DESC
-                              LIMIT ?) l
+                SELECT  f.*, l.like_count
+                FROM    film f
+                JOIN
+                        (SELECT film_id,
+                       COUNT(fl.user_id) AS like_count
+                        FROM film_like as fl
+                        GROUP BY film_id
+                        ORDER BY like_count DESC
+                        LIMIT ?) l
                        ON l.film_id = f.id
                 ORDER  BY l.like_count DESC, f.name;
                 """;
@@ -98,7 +94,7 @@ public class FilmDbStorage implements FilmStorage {
                 .toList();
         Collection<Director> directorCollection = directorStorage.findDirectorsByParams(listDirectors);
 
-        if (listDirectors.size() != directorCollection.size()){
+        if (listDirectors.size() != directorCollection.size()) {
             throw new NotFoundException("Directors not found");
         }
         film.setDirectors(new HashSet<>(directorCollection));
@@ -148,7 +144,7 @@ public class FilmDbStorage implements FilmStorage {
                 .toList();
         Collection<Director> directorCollection = directorStorage.findDirectorsByParams(listDirectors);
 
-        if (listDirectors.size() != directorCollection.size()){
+        if (listDirectors.size() != directorCollection.size()) {
             throw new NotFoundException("Directors not found");
         }
 
@@ -217,10 +213,11 @@ public class FilmDbStorage implements FilmStorage {
             sql = """
                     SELECT f.* 
                     FROM FILM f 
-                    LEFT JOIN FILM_DIRECTOR fd ON f.id = fd.film_id
-                    LEFT JOIN DIRECTORS d ON fd.DIRECTOR_id = d.id
+                        LEFT JOIN FILM_DIRECTOR fd ON f.id = fd.film_id
+                        LEFT JOIN DIRECTORS d ON fd.DIRECTOR_id = d.id
                     WHERE f.NAME ILIKE ? OR d.NAME ILIKE ? 
-                    ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID)
+                    ORDER BY 
+                        (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID)
                     """;
             return jdbcTemplate.query(sql, new Object[]{"%" + query + "%", "%" + query + "%"}, filmRowMapper);
         }

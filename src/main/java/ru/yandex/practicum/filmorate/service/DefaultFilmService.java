@@ -121,8 +121,8 @@ public class DefaultFilmService implements FilmService {
             searchByTitle = true;
             searchByDirector = true;
         }
-log.info("searchFilms(String query, String by): "+filmStorage.searchFilms(query.toLowerCase(),searchByTitle,searchByDirector));
-        List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(),searchByTitle,searchByDirector)
+        log.info("searchFilms(String query, String by): " + filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector));
+        List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector)
                 .stream()
                 .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
                 .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId()).stream().map(directorMapper::toDto).collect(Collectors.toSet())))
@@ -148,7 +148,7 @@ log.info("searchFilms(String query, String by): "+filmStorage.searchFilms(query.
         boolean sortByLikes = sortByYearLikes.contains("likes");
         List<FilmResponseDto> filmResponseDto = List.of();
         if (sortByYear) {
-            filmResponseDto = filmStorage.findFilmsByDirector(directorId,"year").stream()
+            filmResponseDto = filmStorage.findFilmsByDirector(directorId, "year").stream()
                     .map(filmMapper::toDto)
                     .peek(film -> {
                         film.setDirectors(directors);
@@ -157,7 +157,7 @@ log.info("searchFilms(String query, String by): "+filmStorage.searchFilms(query.
             log.info("Film search by director: " + filmResponseDto);
         }
         if (sortByLikes) {
-            filmResponseDto = filmStorage.findFilmsByDirector(directorId,"likes").stream().map(filmMapper::toDto)
+            filmResponseDto = filmStorage.findFilmsByDirector(directorId, "likes").stream().map(filmMapper::toDto)
                     .peek(film -> {
                         film.setDirectors(directors);
                     }).toList();
