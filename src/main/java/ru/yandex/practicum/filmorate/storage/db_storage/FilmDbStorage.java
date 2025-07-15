@@ -46,22 +46,22 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         String sql = """
-                    SELECT 
-                        f.*, 
+                    SELECT
+                        f.*,
                         COALESCE(l.like_count, 0) as like_count
-                    FROM 
+                    FROM
                         film f
                     LEFT JOIN (
-                        SELECT 
-                            film_id, 
+                        SELECT
+                            film_id,
                             COUNT(*) AS like_count
-                        FROM 
+                        FROM
                             film_like
-                        GROUP BY 
+                        GROUP BY
                             film_id
                     ) l ON f.id = l.film_id
-                    ORDER BY 
-                        like_count DESC, 
+                    ORDER BY
+                        like_count DESC,
                         f.name
                     LIMIT ?
                 """;
