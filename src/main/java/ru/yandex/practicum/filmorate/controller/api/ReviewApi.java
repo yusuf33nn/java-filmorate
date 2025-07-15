@@ -42,5 +42,5 @@ public interface ReviewApi {
     ResponseEntity<Void> deleteReviewLike(@PathVariable Long reviewId, @PathVariable Long userId);
 
     @DeleteMapping("/{reviewId}/dislike/{userId}")
-    ResponseEntity<Void> DeleteReviewDislike(@PathVariable Long reviewId, @PathVariable Long userId);
+    ResponseEntity<Void> deleteReviewDislike(@PathVariable Long reviewId, @PathVariable Long userId);
 }

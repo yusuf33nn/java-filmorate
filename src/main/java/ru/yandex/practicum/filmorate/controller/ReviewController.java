@@ -66,7 +66,7 @@ public class ReviewController implements ReviewApi {
     }
 
     @Override
-    public ResponseEntity<Void> DeleteReviewDislike(Long reviewId, Long userId) {
+    public ResponseEntity<Void> deleteReviewDislike(Long reviewId, Long userId) {
         reviewService.deleteReviewDislike(reviewId, userId);
         return ResponseEntity.ok().build();
     }
