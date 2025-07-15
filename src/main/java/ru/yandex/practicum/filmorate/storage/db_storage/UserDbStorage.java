@@ -87,7 +87,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> findSimilarUsers(Long userId) {
         String sql = """
-                SELECT 
+                SELECT
                 u.id,
                 u.email,
                 u.login,
