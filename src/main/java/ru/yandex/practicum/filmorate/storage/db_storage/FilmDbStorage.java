@@ -118,14 +118,14 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> searchFilms(String query, Boolean searchByTitle) {
         List<Film> films;
-        if (searchByTitle){
+        if (searchByTitle) {
             String sql = """
-            SELECT * 
-            FROM FILM f 
-            WHERE f.name ilike ? 
-            ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID) desc
-            """;
-            films = jdbcTemplate.query(sql,new Object[]{"%" + query + "%"},filmRowMapper);
+                    SELECT *
+                    FROM FILM f
+                    WHERE f.name ilike ?
+                    ORDER BY (SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = f.ID) desc
+                    """;
+            films = jdbcTemplate.query(sql, new Object[]{"%" + query + "%"}, filmRowMapper);
         } else {
             films = Collections.emptyList();
         }
