@@ -28,8 +28,8 @@ public class DefaultReviewService implements ReviewService {
     private final ReviewMapper reviewMapper;
 
     @Override
-    public ReviewResponseDto createReview(ReviewRequestDto ReviewDto) {
-        Review reviewEntity = reviewMapper.toEntity(ReviewDto);
+    public ReviewResponseDto createReview(ReviewRequestDto reviewDto) {
+        Review reviewEntity = reviewMapper.toEntity(reviewDto);
         userService.findUserById(reviewEntity.getUserId());
         filmService.findFilmById(reviewEntity.getFilmId());
         reviewEntity = reviewStorage.saveReview(reviewEntity);

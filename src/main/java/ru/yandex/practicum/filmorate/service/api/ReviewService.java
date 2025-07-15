@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.model.dto.response.ReviewResponseDto;
 import java.util.List;
 
 public interface ReviewService {
-    ReviewResponseDto createReview(ReviewRequestDto ReviewDto);
+    ReviewResponseDto createReview(ReviewRequestDto reviewDto);
 
     ReviewResponseDto updateReview(ReviewRequestDto reviewDto);
 
