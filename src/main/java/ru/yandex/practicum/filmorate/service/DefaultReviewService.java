@@ -33,7 +33,6 @@ public class DefaultReviewService implements ReviewService {
         userService.findUserById(reviewEntity.getUserId());
         filmService.findFilmById(reviewEntity.getFilmId());
         reviewEntity = reviewStorage.saveReview(reviewEntity);
-        final var savedId = reviewEntity.getId();
         return reviewMapper.toDto(reviewEntity);
     }
 
@@ -51,10 +50,9 @@ public class DefaultReviewService implements ReviewService {
 
     @Override
     public ReviewResponseDto findReviewById(Long reviewId) {
-        ReviewResponseDto responseDto = reviewStorage.findReviewById(reviewId)
+        return reviewStorage.findReviewById(reviewId)
                 .map(reviewMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Review with ID: '%d' is not found".formatted(reviewId)));
-        return responseDto;
     }
 
     @Override

@@ -28,7 +28,7 @@ public class ReviewMapper {
                 .isPositive(dto.getIsPositive())
                 .filmId(dto.getFilmId())
                 .userId(dto.getUserId())
-                .useful(dto.getIseful())
+                .useful(dto.getUseful())
                 .build();
     }
 }

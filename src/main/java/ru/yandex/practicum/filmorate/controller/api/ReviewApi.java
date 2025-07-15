@@ -24,23 +24,23 @@ public interface ReviewApi {
     ResponseEntity<ReviewResponseDto> updateReview(@Valid @RequestBody ReviewRequestDto review);
 
     @GetMapping("/{id}")
-    ResponseEntity<ReviewResponseDto> findReviewById(@Valid @PathVariable Long id);
+    ResponseEntity<ReviewResponseDto> findReviewById(@PathVariable Long id);
 
     @GetMapping
-    ResponseEntity<List<ReviewResponseDto>> findReviewByFilm(@RequestParam(defaultValue = "-1")  Long filmId, @RequestParam(defaultValue = "10") Long count);
+    ResponseEntity<List<ReviewResponseDto>> findReviewByFilm(@RequestParam(defaultValue = "-1") Long filmId, @RequestParam(defaultValue = "10") Long count);
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void>  deleteReview(@Valid @PathVariable Long id);
+    ResponseEntity<Void> deleteReview(@PathVariable Long id);
 
     @PutMapping("/{reviewId}/like/{userId}")
-    ResponseEntity<Void> addReviewLike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
+    ResponseEntity<Void> addReviewLike(@PathVariable Long reviewId, @PathVariable Long userId);
 
     @PutMapping("/{reviewId}/dislike/{userId}")
-    ResponseEntity<Void> addReviewDislike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
+    ResponseEntity<Void> addReviewDislike(@PathVariable Long reviewId, @PathVariable Long userId);
 
     @DeleteMapping("/{reviewId}/like/{userId}")
-    ResponseEntity<Void> deleteReviewLike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
+    ResponseEntity<Void> deleteReviewLike(@PathVariable Long reviewId, @PathVariable Long userId);
 
     @DeleteMapping("/{reviewId}/dislike/{userId}")
-    ResponseEntity<Void> DeleteReviewDislike(@Valid @PathVariable Long reviewId, @Valid @PathVariable Long userId);
+    ResponseEntity<Void> DeleteReviewDislike(@PathVariable Long reviewId, @PathVariable Long userId);
 }
