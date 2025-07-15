@@ -48,5 +48,6 @@ class FilmDbStorageTest {
         List<Film> films = storage.searchFilms("taxi",true);
         assertNotNull(films);
         assertTrue(films.size() > 0);
+        assertEquals(1, films.size());
     }
 }
