@@ -43,7 +43,7 @@ class FilmorateApplicationTests {
         User user = User.builder()
                 .name("user" + random.nextInt())
                 .login("userLogin" + random.nextInt())
-                .email("test" + random.nextInt()+ "@test.ru")
+                .email("test" + random.nextInt() + "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user = userStorage.saveUser(user);
@@ -94,7 +94,7 @@ class FilmorateApplicationTests {
         User user1 = User.builder()
                 .name("user" + random.nextInt())
                 .login("userLogin" + random.nextInt())
-                .email("test" + random.nextInt()+ "@test.ru")
+                .email("test" + random.nextInt() + "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
@@ -102,7 +102,7 @@ class FilmorateApplicationTests {
         User user2 = User.builder()
                 .name("user" + random.nextInt())
                 .login("userLogin" + random.nextInt())
-                .email("test" + random.nextInt()+ "@test.ru")
+                .email("test" + random.nextInt() + "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user2 = userStorage.saveUser(user2);
@@ -150,7 +150,7 @@ class FilmorateApplicationTests {
         User user1 = User.builder()
                 .name("user" + random.nextInt())
                 .login("userLogin" + random.nextInt())
-                .email("test" + random.nextInt()+ "@test.ru")
+                .email("test" + random.nextInt() + "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
@@ -188,7 +188,7 @@ class FilmorateApplicationTests {
         User user1 = User.builder()
                 .name("user" + random.nextInt())
                 .login("userLogin" + random.nextInt())
-                .email("test" + random.nextInt()+ "@test.ru")
+                .email("test" + random.nextInt() + "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
@@ -224,9 +224,9 @@ class FilmorateApplicationTests {
                 .build();
         film = filmStorage.saveFilm(film);
         User user1 = User.builder()
-                .name("user"  + random.nextInt())
-                .login("userLogin "  + random.nextInt())
-                .email("test" + random.nextInt()+ "@test.ru")
+                .name("user" + random.nextInt())
+                .login("userLogin " + random.nextInt())
+                .email("test" + random.nextInt() + "@test.ru")
                 .birthday(LocalDate.of(1980, 10, 25))
                 .build();
         user1 = userStorage.saveUser(user1);
