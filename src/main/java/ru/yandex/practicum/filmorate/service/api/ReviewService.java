@@ -12,7 +12,7 @@ public interface ReviewService {
 
     ReviewResponseDto findReviewById(Long reviewId);
 
-    List<ReviewResponseDto> findReviewByFilm (Long filmId, Long count);
+    List<ReviewResponseDto> findReviewByFilm(Long filmId, Long count);
 
     void deleteReview(Long reviewId);
 
