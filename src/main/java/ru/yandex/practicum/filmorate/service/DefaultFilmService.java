@@ -97,7 +97,7 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public void removeFilmById(Long filmID){
+    public void removeFilmById(Long filmID) {
         filmStorage.removeFilmById(filmID);
     }
 }

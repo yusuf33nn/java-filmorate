@@ -41,22 +41,34 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Set<Film> showMostPopularFilms(Integer count) {
+        if (count == null || count <= 0) {
+            throw new IllegalArgumentException("Count должен быть положительным числом");
+        }
+
         String sql = """
-                   SELECT  f.*, l.like_count
-                     FROM    film f
-                     JOIN
-                            (SELECT film_id,
-                                    COUNT(fl.user_id) AS like_count
-                               FROM film_like as fl
-                           GROUP BY film_id
-                           ORDER BY like_count DESC
-                              LIMIT ?) l
-                       ON l.film_id = f.id
-                ORDER  BY l.like_count DESC, f.name;
+                    SELECT 
+                        f.*, 
+                        COALESCE(l.like_count, 0) as like_count
+                    FROM 
+                        film f
+                    LEFT JOIN (
+                        SELECT 
+                            film_id, 
+                            COUNT(*) AS like_count
+                        FROM 
+                            film_like
+                        GROUP BY 
+                            film_id
+                    ) l ON f.id = l.film_id
+                    ORDER BY 
+                        like_count DESC, 
+                        f.name
+                    LIMIT ?
                 """;
 
         return new LinkedHashSet<>(jdbcTemplate.query(sql, filmRowMapper, count));
     }
+
 
     @Override
     public Film saveFilm(Film film) {

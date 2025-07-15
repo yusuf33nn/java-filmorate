@@ -81,5 +81,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public void removeUserById(Long userId) {userStorage.removeUserById(userId);}
+    public void removeUserById(Long userId) {
+        userStorage.removeUserById(userId);
+    }
 }

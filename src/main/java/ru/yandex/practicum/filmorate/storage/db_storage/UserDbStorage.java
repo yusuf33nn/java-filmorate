@@ -87,21 +87,21 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> findSimilarUsers(Long userId) {
         String sql = """
-    SELECT 
-    u.id,
-    u.email,
-    u.login,
-    u.name,
-    u.birthday,
-    COUNT(*) as likes_count
-    FROM film_like fl1
-    JOIN film_like fl2 ON fl1.film_id = fl2.film_id
-    JOIN users u ON fl2.user_id = u.id
-    WHERE fl1.user_id = ?
-    AND fl2.user_id != ?
-    GROUP BY u.id
-    ORDER BY likes_count DESC
-    """;
+                SELECT 
+                u.id,
+                u.email,
+                u.login,
+                u.name,
+                u.birthday,
+                COUNT(*) as likes_count
+                FROM film_like fl1
+                JOIN film_like fl2 ON fl1.film_id = fl2.film_id
+                JOIN users u ON fl2.user_id = u.id
+                WHERE fl1.user_id = ?
+                AND fl2.user_id != ?
+                GROUP BY u.id
+                ORDER BY likes_count DESC
+                """;
 
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                         User.builder()
@@ -142,11 +142,11 @@ public class UserDbStorage implements UserStorage {
 
     private List<Film> findFilmsLikedByUser(Long userId) {
         String sql = """
-    SELECT f.*
-    FROM film_like fl
-    JOIN film f ON fl.film_id = f.id
-    WHERE fl.user_id = ?
-    """;
+                SELECT f.*
+                FROM film_like fl
+                JOIN film f ON fl.film_id = f.id
+                WHERE fl.user_id = ?
+                """;
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                         Film.builder()
                                 .id(rs.getLong("id"))
@@ -203,8 +203,6 @@ public class UserDbStorage implements UserStorage {
             throw new RuntimeException("Ошибка при удалении пользователя", e);
         }
     }
-
-
 
 
 }
