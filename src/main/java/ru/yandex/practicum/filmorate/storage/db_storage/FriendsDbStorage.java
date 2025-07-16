@@ -21,17 +21,21 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public Set<User> retrieveUsersFriends(Long userId) {
-        var sql = "SELECT * " +
-                "FROM USERS " +
-                "WHERE ID in (" +
-                "SELECT RECEIVER_ID " +
-                "FROM FRIENDSHIP " +
-                "WHERE REQUESTER_ID = ? " +
-                "AND STATUS = 'CONFIRMED'" +
-                ")";
+        String sql = """
+                SELECT * 
+                FROM USERS 
+                WHERE ID IN (
+                    SELECT RECEIVER_ID 
+                    FROM FRIENDSHIP 
+                    WHERE REQUESTER_ID = ? 
+                    AND STATUS = 'CONFIRMED'
+                )
+                """;
+
         List<User> userFriends = jdbcTemplate.query(sql, userRowMapper, userId);
         return new LinkedHashSet<>(userFriends);
     }
+
 
     @Override
     public Set<User> showCommonFriends(Long userId, Long otherId) {

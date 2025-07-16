@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.db_storage;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -134,22 +133,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void removeFilmById(Long filmId) {
-        try {
-            if (!filmExists(filmId)) {
-                throw new NotFoundException("Фильм с ID " + filmId + " не найден");
-            }
-
-            jdbcTemplate.update("DELETE FROM film_genre WHERE film_id = ?", filmId);
-
-            jdbcTemplate.update("DELETE FROM film_like WHERE film_id = ?", filmId);
-
-            jdbcTemplate.update("DELETE FROM film WHERE id = ?", filmId);
-
-        } catch (NotFoundException e) {
-            throw e;
-        } catch (DataAccessException e) {
-            throw new RuntimeException("Ошибка при удалении фильма: " + e.getMessage(), e);
+        if (!filmExists(filmId)) {
+            throw new NotFoundException("Фильм с ID " + filmId + " не найден");
         }
+
+        jdbcTemplate.update("DELETE FROM film_genre WHERE film_id = ?", filmId);
+        jdbcTemplate.update("DELETE FROM film_like WHERE film_id = ?", filmId);
+        jdbcTemplate.update("DELETE FROM film WHERE id = ?", filmId);
     }
 
     private boolean filmExists(Long filmId) {

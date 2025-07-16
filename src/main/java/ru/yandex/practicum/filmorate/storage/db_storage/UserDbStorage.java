@@ -5,6 +5,7 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Film;
@@ -14,7 +15,7 @@ import ru.yandex.practicum.filmorate.storage.api.UserStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -117,28 +118,24 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<Film> getTopRecommendations(Long userId) {
-        List<User> similarUsers = findSimilarUsers(userId)
+        Map<Long, Integer> filmRating = findSimilarUsers(userId)
                 .stream()
                 .limit(10)
-                .collect(Collectors.toList());
-
-        Map<Long, Integer> filmRating = new HashMap<>();
-        for (User user : similarUsers) {
-            List<Film> likedFilms = findFilmsLikedByUser(user.getId());
-
-            for (Film film : likedFilms) {
-                if (!hasLikedFilm(userId, film.getId())) {
-                    filmRating.merge(film.getId(), 1, Integer::sum);
-                }
-            }
-        }
+                .flatMap(user -> findFilmsLikedByUser(user.getId()).stream())
+                .filter(film -> !hasLikedFilm(userId, film.getId()))
+                .collect(Collectors.toMap(
+                        Film::getId,
+                        film -> 1,
+                        Integer::sum
+                ));
 
         return filmRating.entrySet()
                 .stream()
-                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .map(entry -> findFilmById(entry.getKey()))
                 .collect(Collectors.toList());
     }
+
 
     private List<Film> findFilmsLikedByUser(Long userId) {
         String sql = """
@@ -179,12 +176,12 @@ public class UserDbStorage implements UserStorage {
     }
 
     private boolean hasLikedFilm(Long userId, Long filmId) {
-        return jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM film_like WHERE user_id = ? AND film_id = ?",
-                Integer.class,
-                userId, filmId) > 0;
+        String sql = "SELECT COUNT(*) FROM film_like WHERE user_id = ? AND film_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, userId, filmId) > 0;
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void removeUserById(Long userId) {
         String checkUserSql = "SELECT COUNT(*) FROM users WHERE id = ?";
