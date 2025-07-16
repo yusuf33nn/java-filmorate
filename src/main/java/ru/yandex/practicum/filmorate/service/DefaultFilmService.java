@@ -105,6 +105,14 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
+    public List<FilmResponseDto> findCommonFilms(Long userId, Long friendId) {
+        return filmStorage.findCommon(userId, friendId).stream()
+                .map(filmMapper::toDto)
+                .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
+                .toList();
+    }
+
+    @Override
     public List<FilmResponseDto> searchFilms(String query, String by) {
 
         Set<String> titleByDirector = Arrays.stream(by.split(","))

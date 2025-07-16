@@ -14,8 +14,10 @@ import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -238,5 +240,20 @@ public class FilmDbStorage implements FilmStorage {
         } else {
             throw new IllegalArgumentException("Invalid sortBy parameter");
         }
+    }
+
+    @Override
+    public List<Film> findCommon(Long userId, Long friendId) {
+        String sql = """
+                SELECT * FROM FILM f WHERE\s
+                    id IN (
+                            SELECT l.FILM_ID FROM FILM_LIKE l WHERE l.USER_ID = ?
+                            INTERSECT
+                            SELECT l.FILM_ID  FROM FILM_LIKE l  WHERE l.USER_ID = ?
+                )
+               \s""";
+
+
+        return jdbcTemplate.query(sql, filmRowMapper, userId, friendId);
     }
 }
