@@ -33,7 +33,8 @@ public class DefaultDirectorService implements DirectorService {
     @Override
     public DirectorResponseDto findDirectorById(Long id) {
         if (id == null) {
-            return directorDbStorage.findAll().stream().map(directorMapper::toDto).findFirst().get();
+            return directorDbStorage.findAll().stream().map(directorMapper::toDto).findFirst()
+                    .orElseThrow(() -> new NotFoundException("Director not found"));
         }
         return directorDbStorage.findDirectorById(id)
                 .map(directorMapper::toDto)
@@ -51,7 +52,6 @@ public class DefaultDirectorService implements DirectorService {
         Long directorId = director.getId();
         if (directorId == null || directorId == 0) {
             var errorMessage = "Director id cannot be null or zero for update operation";
-            log.error(errorMessage);
             throw new ValidationException(errorMessage);
         }
         findDirectorById(directorId);

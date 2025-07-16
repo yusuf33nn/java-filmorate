@@ -93,7 +93,7 @@ public class FilmDbStorage implements FilmStorage {
         Collection<Director> directorCollection = directorStorage.findDirectorsByParams(listDirectors);
 
         if (listDirectors.size() != directorCollection.size()) {
-            throw new NotFoundException("Directors not found");
+            throw new RuntimeException("Directors not found");
         }
         film.setDirectors(new HashSet<>(directorCollection));
 
@@ -141,7 +141,7 @@ public class FilmDbStorage implements FilmStorage {
         Collection<Director> directorCollection = directorStorage.findDirectorsByParams(listDirectors);
 
         if (listDirectors.size() != directorCollection.size()) {
-            throw new NotFoundException("Directors not found");
+            throw new RuntimeException("Directors not found");
         }
 
         String sql = """
@@ -254,7 +254,8 @@ public class FilmDbStorage implements FilmStorage {
                     ORDER BY f.release_date
                     """;
             return jdbcTemplate.query(sql, filmRowMapper, directorId);
-        } else if ("likes".equals(sortBy)) {
+        }
+        if ("likes".equals(sortBy)) {
             sql = """
                     SELECT f.*, COUNT(fl.user_id) as like_count
                     FROM film f
