@@ -5,6 +5,7 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Film;
@@ -131,6 +132,7 @@ public class FilmDbStorage implements FilmStorage {
         return Set.copyOf(jdbcTemplate.queryForList(sql, Long.class, filmId));
     }
 
+    @Transactional
     @Override
     public void removeFilmById(Long filmId) {
         if (!filmExists(filmId)) {

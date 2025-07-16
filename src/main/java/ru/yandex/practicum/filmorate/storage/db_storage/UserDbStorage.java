@@ -181,7 +181,7 @@ public class UserDbStorage implements UserStorage {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     @Override
     public void removeUserById(Long userId) {
         String checkUserSql = "SELECT COUNT(*) FROM users WHERE id = ?";
