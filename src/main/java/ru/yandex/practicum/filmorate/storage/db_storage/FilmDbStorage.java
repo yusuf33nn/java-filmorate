@@ -32,9 +32,9 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query("select * from film", filmRowMapper)
                 .stream()
                 .peek(film -> {
-                                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-                                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
-                                    film.setLikes(getFilmLikesByFilmId(film.getId()));
+                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+                    film.setLikes(getFilmLikesByFilmId(film.getId()));
                 })
                 .collect(Collectors.toList());
     }

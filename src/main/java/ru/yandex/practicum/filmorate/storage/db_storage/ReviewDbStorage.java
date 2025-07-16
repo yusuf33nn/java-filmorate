@@ -74,8 +74,9 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public List<Review> findReviewByFilm(Long filmId, Long count) {
         StringBuilder sql = new StringBuilder("select * from reviews ");
-        if (filmId >= 0)
+        if (filmId >= 0) {
             sql.append(" where film_id = ").append(filmId);
+        }
         sql.append(" order by useful limit ").append(count);
         return jdbcTemplate.query(sql.toString(), reviewRowMapper);
     }

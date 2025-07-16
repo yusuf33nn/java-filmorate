@@ -13,7 +13,7 @@ public interface FilmStorage {
 
     Optional<Film> findFilmById(Long filmId);
 
-    LinkedHashSet<Film> showMostPopularFilms(Integer count);
+    Set<Film> showMostPopularFilms(Integer count);
 
     Film saveFilm(Film film);
 
