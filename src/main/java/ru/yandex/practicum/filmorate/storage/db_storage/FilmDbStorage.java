@@ -30,23 +30,37 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FilmRowMapper filmRowMapper;
     private final DirectorStorage directorStorage;
+    private final GenreDbStorage genreDbStorage;
+    private final MpaRatingDbStorage ratingDbStorage;
 
     @Override
     public List<Film> findAll() {
-        return jdbcTemplate.query("select * from film", filmRowMapper);
+
+        return jdbcTemplate.query("select * from film", filmRowMapper)
+                .stream()
+                .peek(film -> {
+                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+                    film.setLikes(getFilmLikesByFilmId(film.getId()));
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Film> findFilmById(Long filmId) {
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(
-                        jdbcTemplate.query("select * from film where id = ?", filmRowMapper, filmId)
-                )
+        Film film = DataAccessUtils.singleResult(
+                jdbcTemplate.query("select * from film where id = ?", filmRowMapper, filmId)
         );
+        if (film != null) {
+            film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+            film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+            film.setLikes(getFilmLikesByFilmId(film.getId()));
+        }
+        return Optional.ofNullable(film);
     }
 
     @Override
-    public Set<Film> showMostPopularFilms(Integer count) {
+    public LinkedHashSet<Film> showMostPopularFilms(Integer count) {
         String sql = """
                    SELECT  f.*, l.like_count
                      FROM    film f
@@ -61,7 +75,13 @@ public class FilmDbStorage implements FilmStorage {
                 ORDER  BY l.like_count DESC, f.name;
                 """;
 
-        return new LinkedHashSet<>(jdbcTemplate.query(sql, filmRowMapper, count));
+        return (jdbcTemplate.query(sql, filmRowMapper, count)).stream()
+                .peek(film -> {
+                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+                    film.setLikes(getFilmLikesByFilmId(film.getId()));
+                }).collect(Collectors.toCollection(LinkedHashSet::new));
+
     }
 
     @Override
@@ -93,15 +113,21 @@ public class FilmDbStorage implements FilmStorage {
         var generatedId = Optional.ofNullable(kh.getKey())
                 .map(Number::longValue)
                 .orElseThrow(() -> new RuntimeException("Id is not created"));
-        film.setId(generatedId);
+        if (film != null) {
+            film.setId(generatedId);
+            film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+            film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+            film.setLikes(getFilmLikesByFilmId(film.getId()));
+            film.setId(generatedId);
 
-        if (!film.getDirectors().isEmpty()) {
-            String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
-            List<Object[]> batchArgs = film.getDirectors().stream()
-                    .map(director -> new Object[]{film.getId(), director.getId()})
-                    .collect(Collectors.toList());
+            if (!film.getDirectors().isEmpty()) {
+                String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
+                List<Object[]> batchArgs = film.getDirectors().stream()
+                        .map(director -> new Object[]{film.getId(), director.getId()})
+                        .collect(Collectors.toList());
 
-            jdbcTemplate.batchUpdate(filmDirectorsSql, batchArgs);
+                jdbcTemplate.batchUpdate(filmDirectorsSql, batchArgs);
+            }
         }
         return film;
     }
@@ -135,6 +161,9 @@ public class FilmDbStorage implements FilmStorage {
                 film.getReleaseDate(),
                 film.getMpa().getId(),
                 film.getId());
+        film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+        film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+        film.setLikes(getFilmLikesByFilmId(film.getId()));
 
         String deleteFilmDirector = "DELETE FROM film_director WHERE film_id = ?";
         jdbcTemplate.update(deleteFilmDirector, film.getId());
@@ -149,11 +178,6 @@ public class FilmDbStorage implements FilmStorage {
 
             jdbcTemplate.batchUpdate(filmDirectorsSql, batchArgs);
         }
-
-//        film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-//        film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
-        film.setLikes(getFilmLikesByFilmId(film.getId()));
-
         return film;
     }
 

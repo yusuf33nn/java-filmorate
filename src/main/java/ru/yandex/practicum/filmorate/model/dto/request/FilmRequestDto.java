@@ -37,5 +37,6 @@ public class FilmRequestDto {
     Long duration;
     MpaDto mpa;
     Set<Genre> genres = Collections.emptySet();
+    Set<Long> likes = Collections.emptySet();
     Set<DirectorRequestDto> directors = Collections.emptySet();
 }

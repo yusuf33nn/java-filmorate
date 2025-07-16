@@ -26,6 +26,7 @@ public final class FilmMapper {
                 .mpa(mpaMapper.toDto(e.getMpa()))
                 .genres(e.getGenres())
                 .directors(e.getDirectors().stream().map(directorMapper::toDto).collect(Collectors.toSet()))
+                .likes(e.getLikes())
                 .build();
     }
 
@@ -37,6 +38,7 @@ public final class FilmMapper {
                 .releaseDate(dto.getReleaseDate())
                 .duration(dto.getDuration())
                 .mpa(mpaMapper.toEntity(dto.getMpa()))
+                .likes(dto.getLikes())
                 .directors(dto.getDirectors().stream().map(directorMapper::toEntity).collect(Collectors.toSet()))
                 .build();
     }
