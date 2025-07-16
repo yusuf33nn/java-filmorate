@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.mapper.DirectorRowMapper;
-import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.model.entity.MpaRating;
@@ -41,7 +40,7 @@ class DirectorDbStorageTest {
 
     @Test
     void findAll() {
-        Director director1 = directorStorage.saveDirector(new Director(null,"Станислав Ростоцкий"));
+        Director director1 = directorStorage.saveDirector(new Director(null, "Станислав Ростоцкий"));
         Director director2 = directorStorage.saveDirector(new Director(null, "Леонид Гайдай"));
 
         List<Director> directors = directorStorage.findAll();
@@ -52,7 +51,7 @@ class DirectorDbStorageTest {
 
     @Test
     void findDirectorById() {
-        Director director = directorStorage.saveDirector(new Director(null,"Станислав Ростоцкий"));
+        Director director = directorStorage.saveDirector(new Director(null, "Станислав Ростоцкий"));
 
         MpaRating mpa = new MpaRating(1, "G", "description");
 
@@ -73,7 +72,7 @@ class DirectorDbStorageTest {
 
     @Test
     void saveDirector() {
-        Director directorNew = new Director(null,"Станислав Ростоцкий");
+        Director directorNew = new Director(null, "Станислав Ростоцкий");
         Director directorSave = directorStorage.saveDirector(directorNew);
 
         assertNotNull(directorNew.getId());
@@ -96,7 +95,7 @@ class DirectorDbStorageTest {
 
     @Test
     void updateDirector() {
-        Director director = new Director(null,"Станислав Ростоцкий");
+        Director director = new Director(null, "Станислав Ростоцкий");
         Director saved = directorStorage.saveDirector(director);
 
         saved.setName("Леонид Гайдай");
@@ -112,7 +111,7 @@ class DirectorDbStorageTest {
 
     @Test
     void removeDirector() {
-        Director director = new Director(null,"Станислав Ростоцкий");
+        Director director = new Director(null, "Станислав Ростоцкий");
         Director saved = directorStorage.saveDirector(director);
         directorStorage.removeDirector(saved.getId());
 
