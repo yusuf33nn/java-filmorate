@@ -107,31 +107,6 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public List<FilmResponseDto> searchFilms(String query, String by) {
-
-        Set<String> titleByDirector = Arrays.stream(by.split(","))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
-
-        boolean searchByTitle = titleByDirector.contains("title");
-        boolean searchByDirector = titleByDirector.contains("director");
-
-        if (!searchByTitle || !searchByDirector) {
-            searchByTitle = true;
-            searchByDirector = true;
-        }
-        log.info("searchFilms(String query, String by): " + filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector));
-        List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector)
-                .stream()
-                .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
-                .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId()).stream().map(directorMapper::toDto).collect(Collectors.toSet())))
-                .map(filmMapper::toDto).toList();
-        log.info("Films found filmResponseDto: {}", filmResponseDto);
-        return filmResponseDto;
-    }
-
-    @Override
     public List<FilmResponseDto> searchFilmsByDirector(Long directorId, String sortBy) {
 
         Set<String> sortByYearLikes = Arrays.stream(sortBy.split(","))

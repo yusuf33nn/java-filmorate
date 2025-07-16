@@ -29,6 +29,6 @@ public interface DirectorApi {
     @PutMapping
     ResponseEntity<DirectorResponseDto> updateDirector(@Valid @RequestBody DirectorRequestDto film);
 
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> removeDirector(@PathVariable Long id);
+    @DeleteMapping("/{directorId}")
+    ResponseEntity<Void> removeDirector(@PathVariable Long directorId);
 }

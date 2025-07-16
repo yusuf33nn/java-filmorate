@@ -38,12 +38,6 @@ public class FilmController implements FilmApi {
     }
 
     @Override
-    public ResponseEntity<List<FilmResponseDto>> searchFilms(String query, String by) {
-        log.info("searchFilms: {} {}", query, by);
-        return ResponseEntity.ok(filmService.searchFilms(query, by));
-    }
-
-    @Override
     public ResponseEntity<List<FilmResponseDto>> searchFilmsByDirector(Long directorId, String sortBy) {
         log.info("Getting films by director ID: {}, sorted by: {}", directorId, sortBy);
 

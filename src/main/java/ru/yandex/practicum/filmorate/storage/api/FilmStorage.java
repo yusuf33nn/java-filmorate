@@ -27,6 +27,4 @@ public interface FilmStorage {
     List<Film> searchFilms(String query, Boolean searchByTitle, Boolean searchByDirector);
 
     List<Film> findFilmsByDirector(Long directorId, String sortBy);
-
-//    Set<Film> searchFilmsByLikes(Long directorId);
 }
