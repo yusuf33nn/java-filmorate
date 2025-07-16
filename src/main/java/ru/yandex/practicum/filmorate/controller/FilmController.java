@@ -60,6 +60,11 @@ public class FilmController implements FilmApi {
     }
 
     @Override
+    public ResponseEntity<List<FilmResponseDto>> showCommonFilms(Long userId, Long friendId) {
+        return ResponseEntity.ok(filmService.findCommonFilms(userId, friendId));
+    }
+
+    @Override
     public ResponseEntity<FilmResponseDto> removeFilmById(Long id) {
         filmService.removeFilmById(id);
         return ResponseEntity.ok().build();

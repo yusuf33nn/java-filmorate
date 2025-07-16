@@ -69,7 +69,6 @@ public class FilmDbStorage implements FilmStorage {
         return new LinkedHashSet<>(jdbcTemplate.query(sql, filmRowMapper, count));
     }
 
-
     @Override
     public Film saveFilm(Film film) {
         String sql = "INSERT INTO FILM (NAME, DESCRIPTION, DURATION, RELEASE_DATE, MPA_RATING_ID) " +
@@ -130,6 +129,21 @@ public class FilmDbStorage implements FilmStorage {
     public Set<Long> getFilmLikesByFilmId(Long filmId) {
         String sql = "SELECT USER_ID FROM FILM_LIKE WHERE FILM_ID = ?";
         return Set.copyOf(jdbcTemplate.queryForList(sql, Long.class, filmId));
+    }
+
+    @Override
+    public List<Film> findCommon(Long userId, Long friendId) {
+        String sql = """
+                SELECT * FROM FILM f WHERE\s
+                    id IN (
+                            SELECT l.FILM_ID FROM FILM_LIKE l WHERE l.USER_ID = ?
+                            INTERSECT
+                            SELECT l.FILM_ID  FROM FILM_LIKE l  WHERE l.USER_ID = ?
+                )
+               \s""";
+
+
+        return jdbcTemplate.query(sql, filmRowMapper, userId, friendId);
     }
 
     @Transactional

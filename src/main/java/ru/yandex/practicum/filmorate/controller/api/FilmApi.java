@@ -44,6 +44,10 @@ public interface FilmApi {
     @DeleteMapping("/{id}/like/{userId}")
     ResponseEntity<Void> removeLikeFromSpecificFilmByUser(@PathVariable Long id, @PathVariable Long userId);
 
+    @GetMapping("/common")
+    ResponseEntity<List<FilmResponseDto>> showCommonFilms(@RequestParam Long userId, @RequestParam Long friendId);
+
+
     @DeleteMapping("/{id}")
     ResponseEntity<FilmResponseDto> removeFilmById(@PathVariable Long id);
 }
