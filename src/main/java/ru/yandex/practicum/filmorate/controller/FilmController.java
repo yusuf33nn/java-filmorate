@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.FilmApi;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
@@ -38,6 +39,17 @@ public class FilmController implements FilmApi {
     @Override
     public ResponseEntity<List<FilmResponseDto>> searchFilms(String query, String by) {
         return ResponseEntity.ok(filmService.searchFilms(query, by));
+    }
+
+    @Override
+    public ResponseEntity<List<FilmResponseDto>> searchFilmsByDirector(Long directorId, String sortBy) {
+        log.info("Getting films by director ID: {}, sorted by: {}", directorId, sortBy);
+
+        if (!"year".equals(sortBy) && !"likes".equals(sortBy)) {
+            throw new ValidationException("Invalid sortBy parameter");
+        }
+
+        return ResponseEntity.ok(filmService.searchFilmsByDirector(directorId, sortBy));
     }
 
     @Override
