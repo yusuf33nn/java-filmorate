@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.DirectorRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.DirectorResponseDto;
-import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.service.api.DirectorService;
 import ru.yandex.practicum.filmorate.storage.db_storage.DirectorDbStorage;
 
