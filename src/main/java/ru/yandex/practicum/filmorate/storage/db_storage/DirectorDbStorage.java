@@ -89,7 +89,7 @@ public class DirectorDbStorage implements DirectorStorage {
         if (params.isEmpty()) {
             return new ArrayList<>();
         }
-        String sql = "SELECT * FROM directors WHERE id IN (:ids) ORDER BY id ";
+        String sql = "SELECT * FROM directors WHERE id IN (:ids) ORDER BY id";
 
         SqlParameterSource parameters = new MapSqlParameterSource("ids", params);
 
@@ -99,17 +99,24 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public List<Director> findDirectorsByDirectorId(Long directorId) {
 
-        String sql = "SELECT D.* FROM FILM_DIRECTOR fd " +
-                " INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID " +
-                " WHERE d.ID = ? ";
+        String sql = """
+                SELECT D.* 
+                FROM FILM_DIRECTOR fd
+                INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID
+                WHERE d.ID = ?
+                """;
         return jdbcTemplate.query(sql, directorRowMapper, directorId);
     }
 
     @Override
     public List<Director> findDirectorsByFilmId(Long filmId) {
-        String sql = "SELECT D.* FROM FILM_DIRECTOR fd " +
-                " INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID " +
-                " WHERE fd.FILM_ID = ? ";
+        String sql =
+                """
+                SELECT D.* 
+                FROM FILM_DIRECTOR fd
+                INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID
+                WHERE fd.FILM_ID = ? 
+                """;
         return jdbcTemplate.query(sql, directorRowMapper, filmId);
     }
 }
