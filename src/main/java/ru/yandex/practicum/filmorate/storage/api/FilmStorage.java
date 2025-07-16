@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.api;
 
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,7 +13,7 @@ public interface FilmStorage {
 
     Optional<Film> findFilmById(Long filmId);
 
-    List<Film> showMostPopularFilms(Integer count);
+    LinkedHashSet<Film> showMostPopularFilms(Integer count);
 
     Film saveFilm(Film film);
 

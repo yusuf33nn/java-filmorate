@@ -50,7 +50,7 @@ public class ReviewDbStorage implements ReviewStorage {
                        ISPOSITIVE   = ?,
                        USER_ID      = ?,
                        FILM_ID  = ?
-                 WHERE id            = ?
+                WHERE id            = ?
                 """;
 
         jdbcTemplate.update(sql,
@@ -73,11 +73,11 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public List<Review> findReviewByFilm(Long filmId, Long count) {
-        String sql = "select * from reviews ";
+        StringBuilder sql = new StringBuilder("select * from reviews ");
         if (filmId >= 0)
-            sql += " where film_id = " + filmId;
-        sql += " order by useful  limit " + count;
-        return jdbcTemplate.query(sql, reviewRowMapper);
+            sql.append(" where film_id = ").append(filmId);
+        sql.append(" order by useful limit ").append(count);
+        return jdbcTemplate.query(sql.toString(), reviewRowMapper);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ReviewDbStorage implements ReviewStorage {
                 	SET useful	=   (SELECT sum(grade)
                 						FROM reviews_grades
                 					 WHERE review_id  = REVIEWS.id)
-                 WHERE id            = ?
+                WHERE id            = ?
                 """;
 
         jdbcTemplate.update(sql, reviewId);

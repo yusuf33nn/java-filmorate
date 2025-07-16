@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> showMostPopularFilms(Integer count) {
+    public LinkedHashSet<Film> showMostPopularFilms(Integer count) {
         String sql = """
                    SELECT  f.*, l.like_count
                      FROM    film f
@@ -72,8 +73,8 @@ public class FilmDbStorage implements FilmStorage {
                     film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
                     film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
                     film.setLikes(getFilmLikesByFilmId(film.getId()));
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toCollection(LinkedHashSet::new));
+
     }
 
     @Override
