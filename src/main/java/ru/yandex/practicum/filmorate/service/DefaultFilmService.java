@@ -5,12 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.DirectorResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
-import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.DirectorService;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
@@ -36,7 +35,6 @@ public class DefaultFilmService implements FilmService {
     private final GenreService genreService;
     private final MpaRatingService mpaRatingService;
     private final DirectorService directorService;
-    private final DirectorMapper directorMapper;
 
     @Override
     public List<FilmResponseDto> findAllFilms() {
@@ -114,10 +112,7 @@ public class DefaultFilmService implements FilmService {
                 .map(String::toLowerCase)
                 .collect(Collectors.toSet());
 
-        Set<Director> directors = directorService.findDirectorsByDirectorId(directorId)
-                .stream()
-                .map(directorMapper::toDto)
-                .collect(Collectors.toSet());
+        Set<DirectorResponseDto> directors = directorService.findDirectorsByDirectorId(directorId);
 
         boolean sortByYear = sortByYearLikes.contains("year");
         boolean sortByLikes = sortByYearLikes.contains("likes");

@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.filmorate.annotation.MinDate;
 import ru.yandex.practicum.filmorate.annotation.PositiveDuration;
 import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
-import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.model.entity.Genre;
 
 import java.time.LocalDate;
@@ -38,5 +37,5 @@ public class FilmRequestDto {
     MpaDto mpa;
     Set<Genre> genres = Collections.emptySet();
     Set<Long> likes = Collections.emptySet();
-    Set<Director> directors = Collections.emptySet();
+    Set<DirectorRequestDto> directors = Collections.emptySet();
 }

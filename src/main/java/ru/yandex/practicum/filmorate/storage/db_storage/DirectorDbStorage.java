@@ -100,7 +100,7 @@ public class DirectorDbStorage implements DirectorStorage {
     public List<Director> findDirectorsByDirectorId(Long directorId) {
 
         String sql = """
-                SELECT D.* 
+                SELECT D.*
                 FROM FILM_DIRECTOR fd
                 INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID
                 WHERE d.ID = ?
@@ -112,10 +112,10 @@ public class DirectorDbStorage implements DirectorStorage {
     public List<Director> findDirectorsByFilmId(Long filmId) {
         String sql =
                 """
-                SELECT D.* 
+                SELECT D.*
                 FROM FILM_DIRECTOR fd
                 INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID
-                WHERE fd.FILM_ID = ? 
+                WHERE fd.FILM_ID = ?
                 """;
         return jdbcTemplate.query(sql, directorRowMapper, filmId);
     }
