@@ -64,7 +64,7 @@ class DirectorDbStorageTest {
         film.setDirectors(Set.of(director));
         filmDbStorage.saveFilm(film);
 
-        List<Director> result = directorStorage.findDirectorsByFilmId(1L);
+        List<Director> result = directorStorage.findDirectorsByFilmId(film.getId());
 
         assertEquals(1, result.size());
         assertEquals(director, result.get(0));
@@ -168,7 +168,7 @@ class DirectorDbStorageTest {
         film.setDirectors(Set.of(director));
         filmDbStorage.saveFilm(film);
 
-        List<Director> result = directorStorage.findDirectorsByFilmId(1L);
+        List<Director> result = directorStorage.findDirectorsByFilmId(film.getId());
 
         assertEquals(1, result.size());
         assertEquals(director, result.get(0));
