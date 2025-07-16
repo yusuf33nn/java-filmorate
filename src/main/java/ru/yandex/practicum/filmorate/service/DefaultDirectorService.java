@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.DirectorRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.DirectorResponseDto;
+import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.service.api.DirectorService;
 import ru.yandex.practicum.filmorate.storage.db_storage.DirectorDbStorage;
 
@@ -68,12 +69,12 @@ public class DefaultDirectorService implements DirectorService {
     }
 
     @Override
-    public Set<DirectorResponseDto> findDirectorsByDirectorId(Long directorId) {
-        return directorDbStorage.findDirectorsByDirectorId(directorId).stream().map(directorMapper::toDto).collect(Collectors.toSet());
+    public Set<Director> findDirectorsByDirectorId(Long directorId) {
+        return directorDbStorage.findDirectorsByDirectorId(directorId).stream().collect(Collectors.toSet());
     }
 
     @Override
-    public Set<DirectorResponseDto> findDirectorsByFilmId(Long filmId) {
-        return directorDbStorage.findDirectorsByFilmId(filmId).stream().map(directorMapper::toDto).collect(Collectors.toSet());
+    public Set<Director> findDirectorsByFilmId(Long filmId) {
+        return directorDbStorage.findDirectorsByFilmId(filmId).stream().collect(Collectors.toSet());
     }
 }

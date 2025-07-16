@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.mapper.DirectorMapper;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
@@ -36,7 +35,6 @@ public class DefaultFilmService implements FilmService {
     private final GenreService genreService;
     private final MpaRatingService mpaRatingService;
     private final DirectorService directorService;
-    private final DirectorMapper directorMapper;
 
     @Override
     public List<FilmResponseDto> findAllFilms() {
@@ -131,7 +129,7 @@ public class DefaultFilmService implements FilmService {
         List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector)
                 .stream()
                 .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
-                .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId()).stream().map(directorMapper::toDto).collect(Collectors.toSet())))
+                .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId()).stream().collect(Collectors.toSet())))
                 .map(filmMapper::toDto).toList();
         log.info("Films found filmResponseDto: {}", filmResponseDto);
         return filmResponseDto;
@@ -147,12 +145,16 @@ public class DefaultFilmService implements FilmService {
 
         Set<Director> directors = directorService.findDirectorsByDirectorId(directorId)
                 .stream()
-                .map(directorMapper::toDto)
                 .collect(Collectors.toSet());
 
         boolean sortByYear = sortByYearLikes.contains("year");
         boolean sortByLikes = sortByYearLikes.contains("likes");
         List<FilmResponseDto> filmResponseDto = List.of();
+        filmResponseDto = getFilmResponseDtoList(directorId, sortByYear, filmResponseDto, directors, sortByLikes);
+        return filmResponseDto;
+    }
+
+    private List<FilmResponseDto> getFilmResponseDtoList(Long directorId, boolean sortByYear, List<FilmResponseDto> filmResponseDto, Set<Director> directors, boolean sortByLikes) {
         if (sortByYear) {
             filmResponseDto = filmStorage.findFilmsByDirector(directorId, "year").stream()
                     .map(filmMapper::toDto)
