@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -24,49 +25,58 @@ public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final FilmRowMapper filmRowMapper;
+    private final GenreDbStorage genreDbStorage;
+    private final MpaRatingDbStorage ratingDbStorage;
 
     @Override
     public List<Film> findAll() {
-        return jdbcTemplate.query("select * from film", filmRowMapper);
+
+        return jdbcTemplate.query("select * from film", filmRowMapper)
+                .stream()
+                .peek(film -> {
+                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+                    film.setLikes(getFilmLikesByFilmId(film.getId()));
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Film> findFilmById(Long filmId) {
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(
-                        jdbcTemplate.query("select * from film where id = ?", filmRowMapper, filmId)
-                )
+        Film film = DataAccessUtils.singleResult(
+                jdbcTemplate.query("select * from film where id = ?", filmRowMapper, filmId)
         );
+        if (film != null) {
+            film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+            film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+            film.setLikes(getFilmLikesByFilmId(film.getId()));
+        }
+        return Optional.ofNullable(film);
     }
 
     @Override
-    public Set<Film> showMostPopularFilms(Integer count) {
-        if (count == null || count <= 0) {
-            throw new IllegalArgumentException("Count должен быть положительным числом");
-        }
-
+    public LinkedHashSet<Film> showMostPopularFilms(Integer count) {
         String sql = """
-                    SELECT
-                        f.*,
-                        COALESCE(l.like_count, 0) as like_count
-                    FROM
-                        film f
-                    LEFT JOIN (
-                        SELECT
-                            film_id,
-                            COUNT(*) AS like_count
-                        FROM
-                            film_like
-                        GROUP BY
-                            film_id
-                    ) l ON f.id = l.film_id
-                    ORDER BY
-                        like_count DESC,
-                        f.name
-                    LIMIT ?
+                   SELECT  f.*, l.like_count
+                     FROM    film f
+                     JOIN
+                            (SELECT film_id,
+                                    COUNT(fl.user_id) AS like_count
+                               FROM film_like as fl
+                           GROUP BY film_id
+                           ORDER BY like_count DESC
+                              LIMIT ?) l
+                       ON l.film_id = f.id
+                ORDER  BY l.like_count DESC, f.name;
                 """;
 
-        return new LinkedHashSet<>(jdbcTemplate.query(sql, filmRowMapper, count));
+        return (jdbcTemplate.query(sql, filmRowMapper, count)).stream()
+                .peek(film -> {
+                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+                    film.setLikes(getFilmLikesByFilmId(film.getId()));
+                }).collect(Collectors.toCollection(LinkedHashSet::new));
+
     }
 
     @Override
@@ -87,7 +97,12 @@ public class FilmDbStorage implements FilmStorage {
         var generatedId = Optional.ofNullable(kh.getKey())
                 .map(Number::longValue)
                 .orElseThrow(() -> new RuntimeException("Id is not created"));
-        film.setId(generatedId);
+        if (film != null) {
+            film.setId(generatedId);
+            film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+            film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+            film.setLikes(getFilmLikesByFilmId(film.getId()));
+        }
         return film;
     }
 
@@ -110,6 +125,9 @@ public class FilmDbStorage implements FilmStorage {
                 film.getReleaseDate(),
                 film.getMpa().getId(),
                 film.getId());
+        film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+        film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+        film.setLikes(getFilmLikesByFilmId(film.getId()));
         return film;
     }
 
