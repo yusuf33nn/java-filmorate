@@ -22,12 +22,12 @@ public class FriendsDbStorage implements FriendsStorage {
     @Override
     public Set<User> retrieveUsersFriends(Long userId) {
         String sql = """
-                SELECT * 
-                FROM USERS 
+                SELECT *
+                FROM USERS
                 WHERE ID IN (
-                    SELECT RECEIVER_ID 
-                    FROM FRIENDSHIP 
-                    WHERE REQUESTER_ID = ? 
+                    SELECT RECEIVER_ID
+                    FROM FRIENDSHIP
+                    WHERE REQUESTER_ID = ?
                     AND STATUS = 'CONFIRMED'
                 )
                 """;
