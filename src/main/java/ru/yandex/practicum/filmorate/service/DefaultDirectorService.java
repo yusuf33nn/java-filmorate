@@ -69,12 +69,12 @@ public class DefaultDirectorService implements DirectorService {
     }
 
     @Override
-    public Set<Director> findDirectorsByDirectorId(Long directorId) {
-        return directorDbStorage.findDirectorsByDirectorId(directorId).stream().collect(Collectors.toSet());
+    public Set<DirectorResponseDto> findDirectorsByDirectorId(Long directorId) {
+        return directorDbStorage.findDirectorsByDirectorId(directorId).stream().map(directorMapper::toDto).collect(Collectors.toSet());
     }
 
     @Override
-    public Set<Director> findDirectorsByFilmId(Long filmId) {
-        return directorDbStorage.findDirectorsByFilmId(filmId).stream().collect(Collectors.toSet());
+    public Set<DirectorResponseDto> findDirectorsByFilmId(Long filmId) {
+        return directorDbStorage.findDirectorsByFilmId(filmId).stream().map(directorMapper::toDto).collect(Collectors.toSet());
     }
 }

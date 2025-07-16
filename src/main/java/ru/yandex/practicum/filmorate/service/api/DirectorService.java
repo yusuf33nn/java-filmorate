@@ -19,7 +19,7 @@ public interface DirectorService {
 
     void removeDirector(Long id);
 
-    Set<Director> findDirectorsByDirectorId(Long filmId);
+    Set<DirectorResponseDto> findDirectorsByDirectorId(Long filmId);
 
-    Set<Director> findDirectorsByFilmId(Long filmId);
+    Set<DirectorResponseDto> findDirectorsByFilmId(Long filmId);
 }

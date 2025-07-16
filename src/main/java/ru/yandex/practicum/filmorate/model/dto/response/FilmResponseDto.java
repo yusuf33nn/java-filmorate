@@ -30,5 +30,5 @@ public class FilmResponseDto {
     @Builder.Default
     Set<Genre> genres = Collections.emptySet();
     @Builder.Default
-    Set<Director> directors = Collections.emptySet();
+    Set<DirectorResponseDto> directors = Collections.emptySet();
 }

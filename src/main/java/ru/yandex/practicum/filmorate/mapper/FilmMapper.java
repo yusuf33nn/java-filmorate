@@ -7,12 +7,14 @@ import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public final class FilmMapper {
 
     private final MpaMapper mpaMapper;
+    private final DirectorMapper directorMapper;
 
     public FilmResponseDto toDto(Film e) {
         return FilmResponseDto.builder()
@@ -23,7 +25,7 @@ public final class FilmMapper {
                 .releaseDate(e.getReleaseDate())
                 .mpa(mpaMapper.toDto(e.getMpa()))
                 .genres(e.getGenres())
-                .directors(new HashSet<>(e.getDirectors()))
+                .directors(e.getDirectors().stream().map(directorMapper::toDto).collect(Collectors.toSet()))
                 .build();
     }
 
@@ -35,7 +37,7 @@ public final class FilmMapper {
                 .releaseDate(dto.getReleaseDate())
                 .duration(dto.getDuration())
                 .mpa(mpaMapper.toEntity(dto.getMpa()))
-                .directors(new HashSet<>(dto.getDirectors()))
+                .directors(dto.getDirectors().stream().map(directorMapper::toEntity).collect(Collectors.toSet()))
                 .build();
     }
 }
