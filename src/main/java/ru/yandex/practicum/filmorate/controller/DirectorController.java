@@ -30,7 +30,7 @@ public class DirectorController implements DirectorApi {
 
     @Override
     public ResponseEntity<DirectorResponseDto> createDirector(DirectorRequestDto director) {
-        log.info("Create directory: {}", director);
+        log.info("Create director: {}", director);
         return ResponseEntity.ok(directorService.createDirector(director));
     }
 
@@ -40,8 +40,8 @@ public class DirectorController implements DirectorApi {
     }
 
     @Override
-    public ResponseEntity<Void> removeDirector(Long id) {
-        directorService.removeDirector(id);
+    public ResponseEntity<Void> removeDirector(Long directorId) {
+        directorService.removeDirector(directorId);
         return ResponseEntity.ok().build();
     }
 }

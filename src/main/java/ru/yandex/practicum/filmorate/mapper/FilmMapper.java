@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,6 +39,7 @@ public final class FilmMapper {
                 .duration(dto.getDuration())
                 .mpa(mpaMapper.toEntity(dto.getMpa()))
                 .likes(dto.getLikes())
+                .genres(new HashSet<>(dto.getGenres()))
                 .directors(dto.getDirectors().stream().map(directorMapper::toEntity).collect(Collectors.toSet()))
                 .build();
     }

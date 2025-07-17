@@ -27,6 +27,7 @@ public class FilmController implements FilmApi {
 
     @Override
     public ResponseEntity<FilmResponseDto> findFilmById(Long id) {
+        log.info("Find film by id: {}", id);
         return ResponseEntity.ok(filmService.findFilmById(id));
     }
 
@@ -48,13 +49,13 @@ public class FilmController implements FilmApi {
 
     @Override
     public ResponseEntity<FilmResponseDto> createFilm(FilmRequestDto film) {
-        log.info("Request Body: {}", film);
+        log.info("Request Film create: {}", film);
         return ResponseEntity.status(CREATED).body(filmService.createFilm(film));
     }
 
     @Override
     public ResponseEntity<FilmResponseDto> updateFilm(FilmRequestDto film) {
-        log.info("Request Body: {}", film);
+        log.info("Request Update Body: {}", film);
         return ResponseEntity.ok(filmService.updateFilm(film));
     }
 
