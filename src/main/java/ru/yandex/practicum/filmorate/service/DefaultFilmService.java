@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.DirectorResponseDto;
@@ -124,7 +125,7 @@ public class DefaultFilmService implements FilmService {
                 .stream()
                 .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
                 .map(filmMapper::toDto)
-                .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId()).stream().collect(Collectors.toSet())))
+                .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId())))
                 .toList();
         log.info("Films found filmResponseDto: {}", filmResponseDto);
         return filmResponseDto;
@@ -137,6 +138,10 @@ public class DefaultFilmService implements FilmService {
                 .map(String::trim)
                 .map(String::toLowerCase)
                 .collect(Collectors.toSet());
+
+        if (!"year".equals(sortBy) && !"likes".equals(sortBy)) {
+            throw new ValidationException("Invalid sortBy parameter");
+        }
 
         Set<DirectorResponseDto> directors = directorService.findDirectorsByDirectorId(directorId);
 
