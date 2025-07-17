@@ -6,6 +6,8 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.model.entity.Film;
@@ -63,17 +65,15 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public LinkedHashSet<Film> showMostPopularFilms(Integer count) {
         String sql = """
-                   SELECT  f.*, l.like_count
-                     FROM    film f
-                     JOIN
-                            (SELECT film_id,
+                   SELECT  f.*, (SELECT
                                     COUNT(fl.user_id) AS like_count
-                               FROM film_like as fl
-                           GROUP BY film_id
-                           ORDER BY like_count DESC
-                              LIMIT ?) l
-                       ON l.film_id = f.id
-                ORDER  BY l.like_count DESC, f.name;
+                               	FROM film_like as fl
+                               	WHERE fl.FILM_ID  = f.id
+                           		GROUP BY film_id
+                           		ORDER BY like_count DESC
+                             	LIMIT ?) AS like_count
+                   	FROM    film f
+                	ORDER  BY like_count DESC, f.name;
                 """;
 
         return (jdbcTemplate.query(sql, filmRowMapper, count)).stream()
@@ -114,21 +114,19 @@ public class FilmDbStorage implements FilmStorage {
         var generatedId = Optional.ofNullable(kh.getKey())
                 .map(Number::longValue)
                 .orElseThrow(() -> new RuntimeException("Id is not created"));
-        if (film != null) {
-            film.setId(generatedId);
-            film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-            film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
-            film.setLikes(getFilmLikesByFilmId(film.getId()));
-            film.setId(generatedId);
+        film.setId(generatedId);
+        film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+        film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+        film.setLikes(getFilmLikesByFilmId(film.getId()));
+        film.setId(generatedId);
 
-            if (!film.getDirectors().isEmpty()) {
-                String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
-                List<Object[]> batchArgs = film.getDirectors().stream()
-                        .map(director -> new Object[]{film.getId(), director.getId()})
-                        .collect(Collectors.toList());
+        if (!film.getDirectors().isEmpty()) {
+            String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
+            List<Object[]> batchArgs = film.getDirectors().stream()
+                    .map(director -> new Object[]{film.getId(), director.getId()})
+                    .collect(Collectors.toList());
 
-                jdbcTemplate.batchUpdate(filmDirectorsSql, batchArgs);
-            }
+            jdbcTemplate.batchUpdate(filmDirectorsSql, batchArgs);
         }
         return film;
     }
@@ -247,6 +245,25 @@ public class FilmDbStorage implements FilmStorage {
                """;
         return jdbcTemplate.query(sql, filmRowMapper, userId, friendId);
     }
+
+    @Transactional
+    @Override
+    public void removeFilmById(Long filmId) {
+        if (!filmExists(filmId)) {
+            throw new NotFoundException("Фильм с ID " + filmId + " не найден");
+        }
+
+        jdbcTemplate.update("DELETE FROM film_genre WHERE film_id = ?", filmId);
+        jdbcTemplate.update("DELETE FROM film_like WHERE film_id = ?", filmId);
+        jdbcTemplate.update("DELETE FROM film WHERE id = ?", filmId);
+    }
+
+    private boolean filmExists(Long filmId) {
+        String sql = "SELECT COUNT(*) FROM film WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, filmId) > 0;
+    }
+
+
 
     private List<Film> getFilmsSortByLikes(Long directorId) {
         String sql;

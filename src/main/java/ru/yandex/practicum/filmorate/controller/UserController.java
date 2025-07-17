@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
+import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 
 import java.util.List;
@@ -42,4 +44,16 @@ public class UserController implements UserApi {
         var response = userService.updateUser(user);
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<List<Film>> getRecommendations(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getRecommendations(userId));
+    }
+
+    @Override
+    public ResponseEntity<UserResponseDto> removeUserById(Long userId) {
+        userService.removeUserById(userId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -16,6 +16,7 @@ import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 
 import java.util.List;
+import java.util.Set;
 
 @RequestMapping(value = "/films")
 public interface FilmApi {
@@ -27,10 +28,10 @@ public interface FilmApi {
     ResponseEntity<FilmResponseDto> findFilmById(@PathVariable Long id);
 
     @GetMapping("/popular")
-    ResponseEntity<List<FilmResponseDto>> showMostPopularFilms(@RequestParam(name = "count", defaultValue = "10")
-                                                               @Valid @Max(10000)
-                                                               @Positive(message = "Count должен быть больше 0")
-                                                               int count);
+    ResponseEntity<Set<FilmResponseDto>> showMostPopularFilms(@RequestParam(name = "count", defaultValue = "10")
+                                                              @Valid @Max(10000)
+                                                              @Positive(message = "Count должен быть больше 0")
+                                                              int count);
 
     @GetMapping("/search")
     ResponseEntity<List<FilmResponseDto>> searchFilms(@RequestParam(name = "query", defaultValue = "") String query, @RequestParam(defaultValue = "title") String by);
@@ -54,4 +55,7 @@ public interface FilmApi {
     @GetMapping("/common")
     ResponseEntity<List<FilmResponseDto>> showCommonFilms(@RequestParam Long userId, @RequestParam Long friendId);
 
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<FilmResponseDto> removeFilmById(@PathVariable Long id);
 }

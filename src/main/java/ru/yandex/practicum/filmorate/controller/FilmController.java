@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -32,7 +33,7 @@ public class FilmController implements FilmApi {
     }
 
     @Override
-    public ResponseEntity<List<FilmResponseDto>> showMostPopularFilms(int count) {
+    public ResponseEntity<Set<FilmResponseDto>> showMostPopularFilms(int count) {
         return ResponseEntity.ok(filmService.showMostPopularFilms(count));
     }
 
@@ -74,5 +75,11 @@ public class FilmController implements FilmApi {
     @Override
     public ResponseEntity<List<FilmResponseDto>> showCommonFilms(Long userId, Long friendId) {
         return ResponseEntity.ok(filmService.findCommonFilms(userId, friendId));
+    }
+
+    @Override
+    public ResponseEntity<FilmResponseDto> removeFilmById(Long id) {
+        filmService.removeFilmById(id);
+        return ResponseEntity.ok().build();
     }
 }

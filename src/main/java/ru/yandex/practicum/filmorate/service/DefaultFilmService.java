@@ -19,6 +19,7 @@ import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,8 +52,11 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public List<FilmResponseDto> showMostPopularFilms(Integer count) {
-        return filmStorage.showMostPopularFilms(count).stream().map(filmMapper::toDto).toList();
+    public LinkedHashSet<FilmResponseDto> showMostPopularFilms(Integer count) {
+        return filmStorage.showMostPopularFilms(count)
+                .stream()
+                .map(filmMapper::toDto)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -173,5 +177,10 @@ public class DefaultFilmService implements FilmService {
             log.info("Film search by director: " + filmResponseDto);
         }
         return filmResponseDto;
+    }
+
+    @Override
+    public void removeFilmById(Long filmID) {
+        filmStorage.removeFilmById(filmID);
     }
 }

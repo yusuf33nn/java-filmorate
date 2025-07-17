@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FilmService {
 
@@ -11,7 +12,7 @@ public interface FilmService {
 
     FilmResponseDto findFilmById(Long filmId);
 
-    List<FilmResponseDto> showMostPopularFilms(Integer count);
+    Set<FilmResponseDto> showMostPopularFilms(Integer count);
 
     FilmResponseDto createFilm(FilmRequestDto film);
 
@@ -26,4 +27,6 @@ public interface FilmService {
     List<FilmResponseDto> searchFilms(String query, String by);
 
     List<FilmResponseDto> searchFilmsByDirector(Long id, String by);
+
+    void removeFilmById(Long filmID);
 }

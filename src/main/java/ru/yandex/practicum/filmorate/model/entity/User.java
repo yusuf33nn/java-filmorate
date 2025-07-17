@@ -31,4 +31,5 @@ public class User {
     LocalDate birthday;
     @Builder.Default
     Set<Long> friends = Collections.emptySet();
+    Integer likesCount;
 }
