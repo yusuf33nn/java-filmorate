@@ -24,6 +24,10 @@ public interface FilmStorage {
 
     Set<Long> getFilmLikesByFilmId(Long filmId);
 
+    List<Film> searchFilms(String query, Boolean searchByTitle, Boolean searchByDirector);
+
+    List<Film> findFilmsByDirector(Long directorId, String sortBy);
+
     List<Film> findCommon(Long userId, Long friendId);
 
     void removeFilmById(Long filmId);
