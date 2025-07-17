@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
@@ -23,6 +24,9 @@ public interface UserApi {
 
     @GetMapping("/{userId}")
     ResponseEntity<UserResponseDto> findUserById(@PathVariable("userId") Long userId);
+
+    @GetMapping("/{id}/feed")
+    ResponseEntity<List<UserEventFeedResponseDto>> getLastUserEvents(@PathVariable("id") Long userId);
 
     @PostMapping
     ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto user);

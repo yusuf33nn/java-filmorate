@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.UserService;
@@ -83,5 +84,10 @@ public class DefaultUserService implements UserService {
     @Override
     public void removeUserById(Long userId) {
         userStorage.removeUserById(userId);
+    }
+
+    @Override
+    public List<UserEventFeedResponseDto> getLastUserEvents(Long userId) {
+        return List.of();
     }
 }

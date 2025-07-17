@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.UserService;
@@ -30,6 +31,11 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserResponseDto> findUserById(Long id) {
         return ResponseEntity.ok(userService.findUserById(id));
+    }
+
+    @Override
+    public ResponseEntity<List<UserEventFeedResponseDto>> getLastUserEvents(Long userId) {
+        return ResponseEntity.ok(userService.getLastUserEvents(userId));
     }
 
     @Override
