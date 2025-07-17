@@ -45,11 +45,6 @@ public class FilmController implements FilmApi {
     @Override
     public ResponseEntity<List<FilmResponseDto>> searchFilmsByDirector(Long directorId, String sortBy) {
         log.info("Getting films by director ID: {}, sorted by: {}", directorId, sortBy);
-
-        if (!"year".equals(sortBy) && !"likes".equals(sortBy)) {
-            throw new ValidationException("Invalid sortBy parameter");
-        }
-
         return ResponseEntity.ok(filmService.searchFilmsByDirector(directorId, sortBy));
     }
 
