@@ -116,21 +116,19 @@ public class FilmDbStorage implements FilmStorage {
         var generatedId = Optional.ofNullable(kh.getKey())
                 .map(Number::longValue)
                 .orElseThrow(() -> new RuntimeException("Id is not created"));
-        if (film != null) {
-            film.setId(generatedId);
-            film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-            film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
-            film.setLikes(getFilmLikesByFilmId(film.getId()));
-            film.setId(generatedId);
+        film.setId(generatedId);
+        film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+        film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+        film.setLikes(getFilmLikesByFilmId(film.getId()));
+        film.setId(generatedId);
 
-            if (!film.getDirectors().isEmpty()) {
-                String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
-                List<Object[]> batchArgs = film.getDirectors().stream()
-                        .map(director -> new Object[]{film.getId(), director.getId()})
-                        .collect(Collectors.toList());
+        if (!film.getDirectors().isEmpty()) {
+            String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
+            List<Object[]> batchArgs = film.getDirectors().stream()
+                    .map(director -> new Object[]{film.getId(), director.getId()})
+                    .collect(Collectors.toList());
 
-                jdbcTemplate.batchUpdate(filmDirectorsSql, batchArgs);
-            }
+            jdbcTemplate.batchUpdate(filmDirectorsSql, batchArgs);
         }
         return film;
     }
