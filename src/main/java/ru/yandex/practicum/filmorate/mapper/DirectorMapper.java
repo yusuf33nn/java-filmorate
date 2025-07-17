@@ -19,14 +19,14 @@ public class DirectorMapper {
                 .build();
     }
 
-    public Director toEntity(DirectorRequestDto dto) {
+    public Director toDto(DirectorResponseDto directorResponseDto) {
         return Director.builder()
-                .id(dto.getId())
-                .name(dto.getName())
+                .id(directorResponseDto.getId())
+                .name(directorResponseDto.getName())
                 .build();
     }
 
-    public Director toDto(DirectorResponseDto dto) {
+    public Director toEntity(DirectorRequestDto dto) {
         return Director.builder()
                 .id(dto.getId())
                 .name(dto.getName())

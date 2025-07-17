@@ -4,7 +4,14 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 
@@ -25,6 +32,10 @@ public interface FilmApi {
                                                                @Positive(message = "Count должен быть больше 0")
                                                                int count);
 
+    @GetMapping("/search")
+    ResponseEntity<List<FilmResponseDto>> searchFilms(@RequestParam(name = "query", defaultValue = "") String query, @RequestParam(defaultValue = "title") String by);
+
+
     @GetMapping("/director/{directorId}")
     ResponseEntity<List<FilmResponseDto>> searchFilmsByDirector(@PathVariable Long directorId, @RequestParam(name = "sortBy", defaultValue = "year") String sortBy);
 
@@ -39,4 +50,8 @@ public interface FilmApi {
 
     @DeleteMapping("/{id}/like/{userId}")
     ResponseEntity<Void> removeLikeFromSpecificFilmByUser(@PathVariable Long id, @PathVariable Long userId);
+
+    @GetMapping("/common")
+    ResponseEntity<List<FilmResponseDto>> showCommonFilms(@RequestParam Long userId, @RequestParam Long friendId);
+
 }

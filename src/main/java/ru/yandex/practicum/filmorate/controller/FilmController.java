@@ -49,6 +49,12 @@ public class FilmController implements FilmApi {
     }
 
     @Override
+    public ResponseEntity<List<FilmResponseDto>> searchFilmsByDirector(Long directorId, String sortBy) {
+        log.info("Getting films by director ID: {}, sorted by: {}", directorId, sortBy);
+        return ResponseEntity.ok(filmService.searchFilmsByDirector(directorId, sortBy));
+    }
+
+    @Override
     public ResponseEntity<FilmResponseDto> createFilm(FilmRequestDto film) {
         log.info("Request Film create: {}", film);
         return ResponseEntity.status(CREATED).body(filmService.createFilm(film));
@@ -70,5 +76,10 @@ public class FilmController implements FilmApi {
     public ResponseEntity<Void> removeLikeFromSpecificFilmByUser(Long id, Long userId) {
         filmService.removeLikeFromSpecificFilmByUser(id, userId);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<List<FilmResponseDto>> showCommonFilms(Long userId, Long friendId) {
+        return ResponseEntity.ok(filmService.findCommonFilms(userId, friendId));
     }
 }

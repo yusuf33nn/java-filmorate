@@ -89,7 +89,7 @@ public class DirectorDbStorage implements DirectorStorage {
         if (params.isEmpty()) {
             return new ArrayList<>();
         }
-        String sql = "SELECT * FROM directors WHERE id IN (:ids) ORDER BY id";
+        String sql = "SELECT * FROM directors WHERE id IN (:ids) ORDER BY id ";
 
         SqlParameterSource parameters = new MapSqlParameterSource("ids", params);
 

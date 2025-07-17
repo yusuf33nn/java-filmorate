@@ -12,7 +12,7 @@ public interface FilmStorage {
 
     Optional<Film> findFilmById(Long filmId);
 
-    List<Film> showMostPopularFilms(Integer count);
+    Set<Film> showMostPopularFilms(Integer count);
 
     Film saveFilm(Film film);
 
@@ -27,4 +27,6 @@ public interface FilmStorage {
     List<Film> searchFilms(String query, Boolean searchByTitle, Boolean searchByDirector);
 
     List<Film> findFilmsByDirector(Long directorId, String sortBy);
+
+    List<Film> findCommon(Long userId, Long friendId);
 }
