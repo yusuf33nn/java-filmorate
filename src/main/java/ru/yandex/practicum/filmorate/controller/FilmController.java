@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.FilmApi;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
