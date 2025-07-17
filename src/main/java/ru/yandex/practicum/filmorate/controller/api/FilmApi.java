@@ -32,6 +32,13 @@ public interface FilmApi {
                                                                @Positive(message = "Count должен быть больше 0")
                                                                int count);
 
+    @GetMapping("/search")
+    ResponseEntity<List<FilmResponseDto>> searchFilms(@RequestParam(name = "query", defaultValue = "") String query, @RequestParam(defaultValue = "title") String by);
+
+
+    @GetMapping("/director/{directorId}")
+    ResponseEntity<List<FilmResponseDto>> searchFilmsByDirector(@PathVariable Long directorId, @RequestParam(name = "sortBy", defaultValue = "year") String sortBy);
+
     @PostMapping
     ResponseEntity<FilmResponseDto> createFilm(@Valid @RequestBody FilmRequestDto film);
 

@@ -28,4 +28,6 @@ public class FilmResponseDto {
     Set<Long> likes = Collections.emptySet();
     @Builder.Default
     Set<Genre> genres = Collections.emptySet();
+    @Builder.Default
+    Set<DirectorResponseDto> directors = Collections.emptySet();
 }
