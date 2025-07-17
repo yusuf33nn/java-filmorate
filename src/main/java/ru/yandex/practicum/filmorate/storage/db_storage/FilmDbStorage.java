@@ -65,17 +65,15 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public LinkedHashSet<Film> showMostPopularFilms(Integer count) {
         String sql = """
-                   SELECT  f.*, l.like_count
-                     FROM    film f
-                     JOIN
-                            (SELECT film_id,
+                   SELECT  f.*, (SELECT
                                     COUNT(fl.user_id) AS like_count
-                               FROM film_like as fl
-                           GROUP BY film_id
-                           ORDER BY like_count DESC
-                              LIMIT ?) l
-                       ON l.film_id = f.id
-                ORDER  BY l.like_count DESC, f.name;
+                               	FROM film_like as fl
+                               	WHERE fl.FILM_ID  = f.id
+                           		GROUP BY film_id
+                           		ORDER BY like_count DESC
+                             	LIMIT ?) AS like_count
+                   	FROM    film f
+                	ORDER  BY like_count DESC, f.name;
                 """;
 
         return (jdbcTemplate.query(sql, filmRowMapper, count)).stream()
