@@ -76,7 +76,6 @@ public class FilmDbStorage implements FilmStorage {
                    WHERE
                       ( ? IS NULL
                             OR EXTRACT(YEAR FROM f.release_date) = ? )
-                     
                       AND ( ? IS NULL
                             OR EXISTS ( SELECT 1
                                         FROM   film_genre fg
