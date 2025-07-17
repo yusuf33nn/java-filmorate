@@ -33,7 +33,7 @@ public class DefaultDirectorService implements DirectorService {
     @Override
     public DirectorResponseDto findDirectorById(Long id) {
         if (id == null) {
-            return directorDbStorage.findAll().stream().map(directorMapper::toDto).findFirst()
+            return directorDbStorage.findAll().stream().findFirst().map(directorMapper::toDto)
                     .orElseThrow(() -> new NotFoundException("Director not found"));
         }
         return directorDbStorage.findDirectorById(id)
