@@ -52,6 +52,7 @@ public class DefaultDirectorService implements DirectorService {
         Long directorId = director.getId();
         if (directorId == null || directorId == 0) {
             var errorMessage = "Director id cannot be null or zero for update operation";
+            log.error(errorMessage);
             throw new ValidationException(errorMessage);
         }
         findDirectorById(directorId);
