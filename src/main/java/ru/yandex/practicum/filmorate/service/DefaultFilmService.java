@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.DirectorResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
-import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.DirectorService;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
