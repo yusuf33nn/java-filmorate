@@ -12,7 +12,7 @@ public interface FilmService {
 
     FilmResponseDto findFilmById(Long filmId);
 
-    Set<FilmResponseDto> showMostPopularFilms(Integer count);
+    Set<FilmResponseDto> showMostPopularFilms(Integer count, Integer genreId, Integer year);
 
     FilmResponseDto createFilm(FilmRequestDto film);
 

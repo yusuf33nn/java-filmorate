@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller.api;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +32,15 @@ public interface FilmApi {
     ResponseEntity<Set<FilmResponseDto>> showMostPopularFilms(@RequestParam(name = "count", defaultValue = "10")
                                                               @Valid @Max(10000)
                                                               @Positive(message = "Count должен быть больше 0")
-                                                              int count);
+                                                              int count,
+                                                              @RequestParam(name = "genreId", required = false)
+                                                              @Valid
+                                                              @Positive(message = "genreId должен быть больше 0")
+                                                              Integer genreId,
+                                                              @RequestParam(name = "year", required = false)
+                                                              @Valid
+                                                              @Min(value = 1895L, message = "year должен быть не меньше 1895г.")
+                                                              Integer year);
 
     @GetMapping("/search")
     ResponseEntity<List<FilmResponseDto>> searchFilms(@RequestParam(name = "query", defaultValue = "") String query, @RequestParam(defaultValue = "title") String by);

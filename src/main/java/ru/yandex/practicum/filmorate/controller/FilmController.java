@@ -33,8 +33,8 @@ public class FilmController implements FilmApi {
     }
 
     @Override
-    public ResponseEntity<Set<FilmResponseDto>> showMostPopularFilms(int count) {
-        return ResponseEntity.ok(filmService.showMostPopularFilms(count));
+    public ResponseEntity<Set<FilmResponseDto>> showMostPopularFilms(int count, Integer genreId, Integer year) {
+        return ResponseEntity.ok(filmService.showMostPopularFilms(count, genreId, year));
     }
 
     @Override

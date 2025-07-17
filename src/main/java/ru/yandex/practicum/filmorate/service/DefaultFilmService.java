@@ -52,8 +52,8 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public LinkedHashSet<FilmResponseDto> showMostPopularFilms(Integer count) {
-        return filmStorage.showMostPopularFilms(count)
+    public LinkedHashSet<FilmResponseDto> showMostPopularFilms(Integer count, Integer genreId, Integer year) {
+        return filmStorage.showMostPopularFilms(count, genreId, year)
                 .stream()
                 .map(filmMapper::toDto)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
