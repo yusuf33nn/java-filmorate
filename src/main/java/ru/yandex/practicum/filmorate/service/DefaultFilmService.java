@@ -134,14 +134,14 @@ public class DefaultFilmService implements FilmService {
     @Override
     public List<FilmResponseDto> searchFilmsByDirector(Long directorId, String sortBy) {
 
+        if (!"year".equals(sortBy) && !"likes".equals(sortBy)) {
+            throw new ValidationException("Invalid sortBy parameter");
+        }
+
         Set<String> sortByYearLikes = Arrays.stream(sortBy.split(","))
                 .map(String::trim)
                 .map(String::toLowerCase)
                 .collect(Collectors.toSet());
-
-        if (!"year".equals(sortBy) && !"likes".equals(sortBy)) {
-            throw new ValidationException("Invalid sortBy parameter");
-        }
 
         Set<DirectorResponseDto> directors = directorService.findDirectorsByDirectorId(directorId);
 
