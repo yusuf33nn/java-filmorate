@@ -63,26 +63,33 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public LinkedHashSet<Film> showMostPopularFilms(Integer count) {
+    public LinkedHashSet<Film> showMostPopularFilms(Integer count, Integer genreId, Integer year) {
         String sql = """
                    SELECT  f.*, (SELECT
-                                    COUNT(fl.user_id) AS like_count
-                               	FROM film_like as fl
-                               	WHERE fl.FILM_ID  = f.id
-                           		GROUP BY film_id
-                           		ORDER BY like_count DESC
-                             	LIMIT ?) AS like_count
-                   	FROM    film f
-                	ORDER  BY like_count DESC, f.name;
+                                   COUNT(fL. user_id) AS like_count
+                               FROM film_like as fl
+                               WHERE FL.FILM_ID = f.id
+                               GROUP BY film_id
+                               ORDER BY like_count DESC
+                               LIMIT ?) AS like_count
+                   FROM    film f
+                   WHERE
+                      ( ? IS NULL
+                            OR EXTRACT(YEAR FROM f.release_date) = ? )
+                      AND ( ? IS NULL
+                            OR EXISTS ( SELECT 1
+                                        FROM   film_genre fg
+                                        WHERE  fg.film_id  = f.id
+                                          AND  fg.genre_id = ? ) )
+                    ORDER BY like_count DESC, f.name;
                 """;
 
-        return (jdbcTemplate.query(sql, filmRowMapper, count)).stream()
+        return (jdbcTemplate.query(sql, filmRowMapper, count, year, year, genreId, genreId)).stream()
                 .peek(film -> {
                     film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).get());
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).orElse(null));
                     film.setLikes(getFilmLikesByFilmId(film.getId()));
                 }).collect(Collectors.toCollection(LinkedHashSet::new));
-
     }
 
     @Override
