@@ -43,16 +43,16 @@ public class UserEventFeedDbStorage implements UserEventFeedStorage {
     @Override
     public List<UserEventFeed> getLastUserEvents(Long userId) {
         var sql = """
-            SELECT event_id,
-                   user_id,
-                   event_type,
-                   operation,
-                   entity_id,
-                   timestamp
-            FROM   user_event_feed
-            WHERE  user_id = ?
-            ORDER  BY timestamp DESC
-            """;
+                SELECT event_id,
+                       user_id,
+                       event_type,
+                       operation,
+                       entity_id,
+                       timestamp
+                FROM   user_event_feed
+                WHERE  user_id = ?
+                ORDER  BY timestamp DESC
+                """;
         return jdbcTemplate.query(sql, rowMapper, userId);
     }
 }

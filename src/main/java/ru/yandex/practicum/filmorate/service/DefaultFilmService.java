@@ -70,14 +70,6 @@ public class DefaultFilmService implements FilmService {
         Film filmEntity = filmMapper.toEntity(filmDto);
         mpaRatingService.getMpaRatingById(filmDto.getMpa().getId());
         filmEntity = filmStorage.saveFilm(filmEntity);
-        final var savedFilmId = filmEntity.getId();
-        /*filmDto.getGenres()
-                .forEach(genreEntity -> {
-                    genreService.getGenreById(genreEntity.getId());
-                    findFilmById(savedFilmId);
-                    genreService.addGenreToFilm(genreEntity.getId(), savedFilmId);
-                });*/
-        //filmEntity.setGenres(filmDto.getGenres());
         return filmMapper.toDto(filmEntity);
     }
 
@@ -113,7 +105,10 @@ public class DefaultFilmService implements FilmService {
     public List<FilmResponseDto> findCommonFilms(Long userId, Long friendId) {
         return filmStorage.findCommon(userId, friendId).stream()
                 .map(filmMapper::toDto)
-                .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
+                .peek(film -> {
+                    film.setGenres(genreService.getGenresByFilmId(film.getId()));
+                    film.setMpa(mpaRatingService.getMpaRatingById(film.getMpa().getId()));
+                })
                 .toList();
     }
 
@@ -128,10 +123,6 @@ public class DefaultFilmService implements FilmService {
         boolean searchByTitle = titleByDirector.contains("title");
         boolean searchByDirector = titleByDirector.contains("director");
 
-//        if (!searchByTitle || !searchByDirector) {
-//            searchByTitle = true;
-//            searchByDirector = true;
-//        }
         log.info("searchFilms(String query, String by): " + filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector));
         List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector)
                 .stream()

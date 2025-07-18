@@ -11,8 +11,10 @@ import ru.yandex.practicum.filmorate.storage.api.ReviewStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public Review saveReview(Review review) {
-        String sql = "INSERT INTO REVIEWS (CONTENT, ISPOSITIVE, USER_ID, FILM_ID) " +
+        String sql = "INSERT INTO REVIEWS (CONTENT, IS_POSITIVE, USER_ID, FILM_ID) " +
                 "VALUES (?, ?, ?, ?)";
         GeneratedKeyHolder kh = new GeneratedKeyHolder();
 
@@ -47,19 +49,15 @@ public class ReviewDbStorage implements ReviewStorage {
         String sql = """
                 UPDATE REVIEWS
                    SET CONTENT          = ?,
-                       ISPOSITIVE   = ?,
-                       USER_ID      = ?,
-                       FILM_ID  = ?
+                       IS_POSITIVE   = ?
                 WHERE id            = ?
                 """;
 
         jdbcTemplate.update(sql,
                 review.getContent(),
                 review.getIsPositive(),
-                review.getUserId(),
-                review.getFilmId(),
                 review.getId());
-        return review;
+        return findReviewById(review.getId()).orElseThrow();
     }
 
     @Override
@@ -72,13 +70,13 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public List<Review> findReviewByFilm(Long filmId, Long count) {
+    public LinkedHashSet<Review> findReviewByFilm(Long filmId, Long count) {
         StringBuilder sql = new StringBuilder("select * from reviews ");
         if (filmId >= 0) {
             sql.append(" where film_id = ").append(filmId);
         }
-        sql.append(" order by useful limit ").append(count);
-        return jdbcTemplate.query(sql.toString(), reviewRowMapper);
+        sql.append(" order by useful desc limit ").append(count);
+        return new LinkedHashSet<>(jdbcTemplate.query(sql.toString(), reviewRowMapper));
     }
 
     @Override
@@ -126,7 +124,6 @@ public class ReviewDbStorage implements ReviewStorage {
         calculateReviewGrade(reviewId);
     }
 
-
     void calculateReviewGrade(Long reviewId) {
         String sql = """
                 UPDATE REVIEWS
@@ -138,6 +135,4 @@ public class ReviewDbStorage implements ReviewStorage {
 
         jdbcTemplate.update(sql, reviewId);
     }
-
-
 }

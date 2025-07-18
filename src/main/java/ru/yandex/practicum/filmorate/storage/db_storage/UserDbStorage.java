@@ -136,8 +136,9 @@ public class UserDbStorage implements UserStorage {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .map(entry -> findFilmById(entry.getKey()))
                 .peek(film -> {
-                        film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
-                        film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).orElse(null));})
+                    film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                    film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).orElse(null));
+                })
                 .collect(Collectors.toList());
     }
 
@@ -185,7 +186,6 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.queryForObject(sql, Integer.class, userId, filmId) > 0;
     }
 
-
     @Transactional
     @Override
     public void removeUserById(Long userId) {
@@ -197,9 +197,6 @@ public class UserDbStorage implements UserStorage {
         }
 
         try {
-            /*jdbcTemplate.update("DELETE FROM REVIEWS_GRADES WHERE userId = ?", userId);
-            jdbcTemplate.update("DELETE FROM REVIEWS_GRADES WHERE review_id =" +
-                    " (select id from reviews where user_id = ?)", userId);*/
             jdbcTemplate.update("DELETE FROM REVIEWS WHERE user_id = ?", userId);
             jdbcTemplate.update("DELETE FROM friendship WHERE requester_id = ?", userId);
             jdbcTemplate.update("DELETE FROM friendship WHERE receiver_id = ?", userId);
@@ -210,6 +207,4 @@ public class UserDbStorage implements UserStorage {
             throw new RuntimeException("Ошибка при удалении пользователя", e);
         }
     }
-
-
 }

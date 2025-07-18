@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.model.dto.request.ReviewRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.ReviewResponseDto;
 
-import java.util.List;
+import java.util.Set;
 
 @RequestMapping(value = "/reviews")
 public interface ReviewApi {
@@ -27,7 +27,7 @@ public interface ReviewApi {
     ResponseEntity<ReviewResponseDto> findReviewById(@PathVariable Long id);
 
     @GetMapping
-    ResponseEntity<List<ReviewResponseDto>> findReviewByFilm(@RequestParam(defaultValue = "-1") Long filmId, @RequestParam(defaultValue = "10") Long count);
+    ResponseEntity<Set<ReviewResponseDto>> findReviewByFilm(@RequestParam(defaultValue = "-1") Long filmId, @RequestParam(defaultValue = "10") Long count);
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteReview(@PathVariable Long id);

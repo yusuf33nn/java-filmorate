@@ -11,9 +11,9 @@ public final class UserEventFeedMapper {
 
     public UserEventFeedResponseDto toDto(UserEventFeed e) {
         var timestamp = e.getTimestamp()
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant()
-                        .toEpochMilli();
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
         return UserEventFeedResponseDto.builder()
                 .eventId(e.getEventId())
                 .userId(e.getUserId())

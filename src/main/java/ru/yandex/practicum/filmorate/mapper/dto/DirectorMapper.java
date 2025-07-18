@@ -10,8 +10,6 @@ import ru.yandex.practicum.filmorate.model.entity.Director;
 @RequiredArgsConstructor
 public class DirectorMapper {
 
-    private final MpaMapper mpaMapper;
-
     public DirectorResponseDto toDto(Director director) {
         return DirectorResponseDto.builder()
                 .id(director.getId())

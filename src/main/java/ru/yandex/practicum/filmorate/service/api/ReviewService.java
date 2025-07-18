@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service.api;
 import ru.yandex.practicum.filmorate.model.dto.request.ReviewRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.ReviewResponseDto;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ReviewService {
     ReviewResponseDto createReview(ReviewRequestDto reviewDto);
@@ -12,7 +12,7 @@ public interface ReviewService {
 
     ReviewResponseDto findReviewById(Long reviewId);
 
-    List<ReviewResponseDto> findReviewByFilm(Long filmId, Long count);
+    Set<ReviewResponseDto> findReviewByFilm(Long filmId, Long count);
 
     void deleteReview(Long reviewId);
 

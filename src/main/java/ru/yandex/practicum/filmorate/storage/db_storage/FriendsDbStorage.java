@@ -56,8 +56,6 @@ public class FriendsDbStorage implements FriendsStorage {
         try {
             var requesterSql = "DELETE FROM friendship WHERE REQUESTER_ID = ? AND RECEIVER_ID = ?";
             jdbcTemplate.update(requesterSql, userId, friendId);
-//            var receiverSql = "DELETE FROM friendship WHERE REQUESTER_ID = ? AND RECEIVER_ID = ?";
-//            jdbcTemplate.update(receiverSql, friendId, userId);
         } catch (DataAccessException e) {
             throw new RuntimeException("Cannot remove friendship: " + e.getMessage(), e);
         }

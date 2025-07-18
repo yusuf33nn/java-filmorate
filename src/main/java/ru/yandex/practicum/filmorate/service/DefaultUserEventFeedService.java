@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.dto.UserEventFeedMapper;
 import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.UserEventFeed;
@@ -24,9 +25,13 @@ public class DefaultUserEventFeedService implements UserEventFeedService {
 
     @Override
     public List<UserEventFeedResponseDto> getLastUserEvents(Long userId) {
-        return userEventFeedDbStorage.getLastUserEvents(userId)
+        List<UserEventFeedResponseDto> events = userEventFeedDbStorage.getLastUserEvents(userId)
                 .stream()
                 .map(userEventFeedMapper::toDto)
                 .toList();
+        if (events.isEmpty()) {
+            throw new NotFoundException("Лента для пользователя '%d' пуста".formatted(userId));
+        }
+        return events;
     }
 }

@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.dto.request.ReviewRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.ReviewResponseDto;
 import ru.yandex.practicum.filmorate.service.DefaultReviewService;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -37,14 +37,14 @@ public class ReviewController implements ReviewApi {
     }
 
     @Override
-    public ResponseEntity<List<ReviewResponseDto>> findReviewByFilm(Long filmId, Long count) {
+    public ResponseEntity<Set<ReviewResponseDto>> findReviewByFilm(Long filmId, Long count) {
         return ResponseEntity.ok(reviewService.findReviewByFilm(filmId, count));
     }
 
     @Override
     public ResponseEntity<Void> deleteReview(Long id) {
-       reviewService.deleteReview(id);
-       return ResponseEntity.ok().build();
+        reviewService.deleteReview(id);
+        return ResponseEntity.ok().build();
     }
 
     @Override

@@ -26,8 +26,8 @@ import java.util.Optional;
 public class DirectorDbStorage implements DirectorStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final DirectorRowMapper directorRowMapper;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<Director> findAll() {
@@ -114,11 +114,11 @@ public class DirectorDbStorage implements DirectorStorage {
     public List<Director> findDirectorsByFilmId(Long filmId) {
         String sql =
                 """
-                SELECT D.*
-                FROM FILM_DIRECTOR fd
-                INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID
-                WHERE fd.FILM_ID = ?
-                """;
+                        SELECT D.*
+                        FROM FILM_DIRECTOR fd
+                        INNER JOIN DIRECTORS D on D.ID = fd.DIRECTOR_ID
+                        WHERE fd.FILM_ID = ?
+                        """;
         return jdbcTemplate.query(sql, directorRowMapper, filmId);
     }
 }

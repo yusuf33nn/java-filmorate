@@ -18,6 +18,7 @@ import ru.yandex.practicum.filmorate.storage.db_storage.ReviewDbStorage;
 import ru.yandex.practicum.filmorate.storage.db_storage.UserDbStorage;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -132,7 +133,7 @@ class FilmorateApplicationTests {
                 .build();
         Review newReview2 = reviewStorage.saveReview(review2);
 
-        List<Review> reviewList = reviewStorage.findReviewByFilm(film.getId(), 10L);
+        LinkedHashSet<Review> reviewList = reviewStorage.findReviewByFilm(film.getId(), 10L);
         assertEquals(2, reviewList.size(), "Ожидаемое количество отзывов 2");
     }
 

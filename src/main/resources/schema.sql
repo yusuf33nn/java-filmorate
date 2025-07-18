@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS FILM_GENRE;
 DROP TABLE IF EXISTS FILM_DIRECTOR;
 DROP TABLE IF EXISTS DIRECTORS;
 DROP TABLE IF EXISTS GENRE;
-DROP TABLE IF EXISTS FILM ;
+DROP TABLE IF EXISTS FILM;
 DROP TABLE IF EXISTS MPA_RATING;
 DROP TABLE IF EXISTS USERS;
 
@@ -116,12 +116,12 @@ CREATE TABLE IF NOT EXISTS Film_Director
 );
 CREATE TABLE IF NOT EXISTS reviews
 (
-    id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    content    varchar(500),
-    isPositive boolean,
-    user_id    bigint not NULL,
-    film_id    bigint not null,
-    useful     int DEFAULT 0,
+    id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    content     varchar(500),
+    is_positive boolean,
+    user_id     bigint not NULL,
+    film_id     bigint not null,
+    useful      int DEFAULT 0,
     FOREIGN KEY (film_id) REFERENCES film (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
@@ -137,14 +137,14 @@ CREATE TABLE IF NOT EXISTS reviews_grades
 );
 
 ALTER TABLE reviews_grades
-  DROP CONSTRAINT CONSTRAINT_B58;
+    DROP CONSTRAINT CONSTRAINT_B58;
 ALTER TABLE reviews_grades
-  ADD CONSTRAINT FK_REVIEWS_GRADES_REVIEW
-      FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE;
+    ADD CONSTRAINT FK_REVIEWS_GRADES_REVIEW
+        FOREIGN KEY (review_id) REFERENCES reviews (id) ON DELETE CASCADE;
 
 ALTER TABLE reviews_grades
-  ADD CONSTRAINT FK_REVIEWS_GRADES_USER
-      FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;
+    ADD CONSTRAINT FK_REVIEWS_GRADES_USER
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_event_feed
 (
@@ -152,17 +152,17 @@ CREATE TABLE IF NOT EXISTS user_event_feed
     user_id    bigint      not NULL,
     event_type varchar(50) not null,
     operation  varchar(50) not null,
-    entity_id   bigint      not null,
-    timestamp TIMESTAMP DEFAULT now(),
+    entity_id  bigint      not null,
+    timestamp  TIMESTAMP DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 ALTER TABLE user_event_feed
-  DROP CONSTRAINT constraint_6b2;
+    DROP CONSTRAINT constraint_6b2;
 
 ALTER TABLE user_event_feed
-  ADD CONSTRAINT FK_user_event_feed_user
-      FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;
+    ADD CONSTRAINT FK_user_event_feed_user
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;
 
 ALTER TABLE user_event_feed
     ADD CONSTRAINT IF NOT EXISTS check_user_event_feed_event_type_name

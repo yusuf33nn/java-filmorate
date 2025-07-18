@@ -19,7 +19,8 @@ import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.ReviewStorage;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -64,10 +65,10 @@ public class DefaultReviewService implements ReviewService {
     }
 
     @Override
-    public List<ReviewResponseDto> findReviewByFilm(Long filmId, Long count) {
+    public LinkedHashSet<ReviewResponseDto> findReviewByFilm(Long filmId, Long count) {
         return reviewStorage.findReviewByFilm(filmId, count).stream()
                 .map(reviewMapper::toDto)
-                .toList();
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
