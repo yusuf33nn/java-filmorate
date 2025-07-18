@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.mapper.dto.UserMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
+import ru.yandex.practicum.filmorate.service.api.UserEventFeedService;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.UserStorage;
 
@@ -24,6 +26,7 @@ public class DefaultUserService implements UserService {
     @Qualifier(value = "userDbStorage")
     private final UserStorage userStorage;
     private final UserMapper userMapper;
+    private final UserEventFeedService userEventFeedService;
 
     @Override
     public List<UserResponseDto> showAllUsers() {
@@ -83,5 +86,10 @@ public class DefaultUserService implements UserService {
     @Override
     public void removeUserById(Long userId) {
         userStorage.removeUserById(userId);
+    }
+
+    @Override
+    public List<UserEventFeedResponseDto> getLastUserEvents(Long userId) {
+        return userEventFeedService.getLastUserEvents(userId);
     }
 }

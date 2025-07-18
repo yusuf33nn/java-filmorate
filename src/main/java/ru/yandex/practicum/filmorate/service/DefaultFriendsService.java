@@ -5,13 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.mapper.dto.UserMapper;
+import ru.yandex.practicum.filmorate.model.dto.response.EventType;
+import ru.yandex.practicum.filmorate.model.dto.response.Operation;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.User;
+import ru.yandex.practicum.filmorate.model.entity.UserEventFeed;
 import ru.yandex.practicum.filmorate.service.api.FriendsService;
+import ru.yandex.practicum.filmorate.service.api.UserEventFeedService;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.FriendsStorage;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +30,7 @@ public class DefaultFriendsService implements FriendsService {
     @Qualifier(value = "friendsDbStorage")
     private final FriendsStorage friendsStorage;
     private final UserMapper userMapper;
+    private final UserEventFeedService userEventFeedService;
 
     @Override
     public Set<UserResponseDto> retrieveUsersFriends(Long userId) {
@@ -63,6 +69,7 @@ public class DefaultFriendsService implements FriendsService {
         if (insertedRows != 1) {
             throw new RuntimeException("Error while adding new friendship");
         }
+        userEventFeedService.saveEvent(createFriendEvent(userId, friendId, Operation.ADD));
     }
 
     @Override
@@ -71,5 +78,16 @@ public class DefaultFriendsService implements FriendsService {
         userService.findUserById(friendId);
 
         friendsStorage.deleteFromFriends(userId, friendId);
+        userEventFeedService.saveEvent(createFriendEvent(userId, friendId, Operation.REMOVE));
+    }
+
+    private UserEventFeed createFriendEvent(Long userId, Long friendId, Operation operation) {
+        return UserEventFeed.builder()
+                .userId(userId)
+                .entityId(friendId)
+                .eventType(EventType.FRIEND)
+                .operation(operation)
+                .timestamp(LocalDate.now())
+                .build();
     }
 }

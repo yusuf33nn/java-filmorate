@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.mapper.DirectorRowMapper;
+import ru.yandex.practicum.filmorate.mapper.row.DirectorRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Director;
 import ru.yandex.practicum.filmorate.storage.api.DirectorStorage;
 

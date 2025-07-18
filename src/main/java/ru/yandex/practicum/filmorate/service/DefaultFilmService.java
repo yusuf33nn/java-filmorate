@@ -6,18 +6,23 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.mapper.dto.FilmMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.DirectorResponseDto;
+import ru.yandex.practicum.filmorate.model.dto.response.EventType;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
+import ru.yandex.practicum.filmorate.model.dto.response.Operation;
 import ru.yandex.practicum.filmorate.model.entity.Film;
+import ru.yandex.practicum.filmorate.model.entity.UserEventFeed;
 import ru.yandex.practicum.filmorate.service.api.DirectorService;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
 import ru.yandex.practicum.filmorate.service.api.GenreService;
 import ru.yandex.practicum.filmorate.service.api.MpaRatingService;
+import ru.yandex.practicum.filmorate.service.api.UserEventFeedService;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.FilmStorage;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -36,6 +41,7 @@ public class DefaultFilmService implements FilmService {
     private final GenreService genreService;
     private final MpaRatingService mpaRatingService;
     private final DirectorService directorService;
+    private final UserEventFeedService userEventFeedService;
 
     @Override
     public List<FilmResponseDto> findAllFilms() {
@@ -92,6 +98,7 @@ public class DefaultFilmService implements FilmService {
         findFilmById(filmId);
         userService.findUserById(userId);
         filmStorage.setLikeToSpecificFilmByUser(filmId, userId);
+        userEventFeedService.saveEvent(createLikeEvent(userId, filmId, Operation.ADD));
     }
 
     @Override
@@ -99,6 +106,7 @@ public class DefaultFilmService implements FilmService {
         findFilmById(filmId);
         userService.findUserById(userId);
         filmStorage.removeLikeFromSpecificFilmByUser(filmId, userId);
+        userEventFeedService.saveEvent(createLikeEvent(userId, filmId, Operation.REMOVE));
     }
 
     @Override
@@ -182,5 +190,15 @@ public class DefaultFilmService implements FilmService {
     @Override
     public void removeFilmById(Long filmID) {
         filmStorage.removeFilmById(filmID);
+    }
+
+    private UserEventFeed createLikeEvent(Long userId, Long filmId, Operation operation) {
+        return UserEventFeed.builder()
+                .userId(userId)
+                .entityId(filmId)
+                .eventType(EventType.LIKE)
+                .operation(operation)
+                .timestamp(LocalDate.now())
+                .build();
     }
 }

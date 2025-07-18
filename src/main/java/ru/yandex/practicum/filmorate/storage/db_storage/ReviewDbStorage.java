@@ -5,7 +5,7 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.mapper.ReviewRowMapper;
+import ru.yandex.practicum.filmorate.mapper.row.ReviewRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Review;
 import ru.yandex.practicum.filmorate.storage.api.ReviewStorage;
 
@@ -30,7 +30,7 @@ public class ReviewDbStorage implements ReviewStorage {
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, review.getContent());
-            ps.setBoolean(2, review.getIsPositive());          // «login» здесь — обычная колонка
+            ps.setBoolean(2, review.getIsPositive());
             ps.setLong(3, review.getUserId());
             ps.setLong(4, review.getFilmId());
             return ps;

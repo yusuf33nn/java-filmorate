@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.mapper;
+package ru.yandex.practicum.filmorate.mapper.dto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

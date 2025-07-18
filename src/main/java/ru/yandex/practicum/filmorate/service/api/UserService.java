@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service.api;
 
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
@@ -21,4 +22,6 @@ public interface UserService {
     List<Film> getRecommendations(Long userId);
 
     void removeUserById(Long userId);
+
+    List<UserEventFeedResponseDto> getLastUserEvents(Long userId);
 }

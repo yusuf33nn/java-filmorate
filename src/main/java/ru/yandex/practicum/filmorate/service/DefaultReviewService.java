@@ -5,15 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.mapper.ReviewMapper;
+import ru.yandex.practicum.filmorate.mapper.dto.ReviewMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.ReviewRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.EventType;
+import ru.yandex.practicum.filmorate.model.dto.response.Operation;
 import ru.yandex.practicum.filmorate.model.dto.response.ReviewResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Review;
+import ru.yandex.practicum.filmorate.model.entity.UserEventFeed;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
 import ru.yandex.practicum.filmorate.service.api.ReviewService;
+import ru.yandex.practicum.filmorate.service.api.UserEventFeedService;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.ReviewStorage;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +31,7 @@ public class DefaultReviewService implements ReviewService {
     private final UserService userService;
     private final FilmService filmService;
     private final ReviewMapper reviewMapper;
+    private final UserEventFeedService userEventFeedService;
 
     @Override
     public ReviewResponseDto createReview(ReviewRequestDto reviewDto) {
@@ -33,6 +39,7 @@ public class DefaultReviewService implements ReviewService {
         userService.findUserById(reviewEntity.getUserId());
         filmService.findFilmById(reviewEntity.getFilmId());
         reviewEntity = reviewStorage.saveReview(reviewEntity);
+        userEventFeedService.saveEvent(createReviewEvent(reviewEntity, Operation.ADD));
         return reviewMapper.toDto(reviewEntity);
     }
 
@@ -45,6 +52,7 @@ public class DefaultReviewService implements ReviewService {
         }
         findReviewById(reviewId);
         Review review = reviewStorage.updateReview(reviewMapper.toEntity(reviewDto));
+        userEventFeedService.saveEvent(createReviewEvent(review, Operation.UPDATE));
         return reviewMapper.toDto(review);
     }
 
@@ -64,7 +72,11 @@ public class DefaultReviewService implements ReviewService {
 
     @Override
     public void deleteReview(Long reviewId) {
+        Review review = reviewStorage.findReviewById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review with ID: '%d' is not found".formatted(reviewId)));
+        var event = createReviewEvent(review, Operation.REMOVE);
         reviewStorage.deleteReview(reviewId);
+        userEventFeedService.saveEvent(event);
     }
 
     @Override
@@ -127,5 +139,15 @@ public class DefaultReviewService implements ReviewService {
         userService.findUserById(userId);
         findReviewById(reviewId);
         reviewStorage.deleteReviewDislike(reviewId, userId);
+    }
+
+    private UserEventFeed createReviewEvent(Review review, Operation operation) {
+        return UserEventFeed.builder()
+                .userId(review.getUserId())
+                .entityId(review.getId())
+                .eventType(EventType.REVIEW)
+                .operation(operation)
+                .timestamp(LocalDate.now())
+                .build();
     }
 }

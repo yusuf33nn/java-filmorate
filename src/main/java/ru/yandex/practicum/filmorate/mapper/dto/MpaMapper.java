@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.mapper;
+package ru.yandex.practicum.filmorate.mapper.dto;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
