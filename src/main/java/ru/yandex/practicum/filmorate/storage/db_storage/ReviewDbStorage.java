@@ -12,9 +12,7 @@ import ru.yandex.practicum.filmorate.storage.api.ReviewStorage;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
