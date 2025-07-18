@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.mapper.dto.FilmMapper;
 import ru.yandex.practicum.filmorate.mapper.dto.UserMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
@@ -26,6 +28,7 @@ public class DefaultUserService implements UserService {
     @Qualifier(value = "userDbStorage")
     private final UserStorage userStorage;
     private final UserMapper userMapper;
+    private final FilmMapper filmMapper;
     private final UserEventFeedService userEventFeedService;
 
     @Override
@@ -79,8 +82,8 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<Film> getRecommendations(Long userId) {
-        return userStorage.getTopRecommendations(userId);
+    public List<FilmResponseDto> getRecommendations(Long userId) {
+        return userStorage.getTopRecommendations(userId).stream().map(filmMapper::toDto).toList();
     }
 
     @Override

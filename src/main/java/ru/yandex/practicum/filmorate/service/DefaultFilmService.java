@@ -71,13 +71,13 @@ public class DefaultFilmService implements FilmService {
         mpaRatingService.getMpaRatingById(filmDto.getMpa().getId());
         filmEntity = filmStorage.saveFilm(filmEntity);
         final var savedFilmId = filmEntity.getId();
-        filmDto.getGenres()
+        /*filmDto.getGenres()
                 .forEach(genreEntity -> {
                     genreService.getGenreById(genreEntity.getId());
                     findFilmById(savedFilmId);
                     genreService.addGenreToFilm(genreEntity.getId(), savedFilmId);
-                });
-        filmEntity.setGenres(filmDto.getGenres());
+                });*/
+        //filmEntity.setGenres(filmDto.getGenres());
         return filmMapper.toDto(filmEntity);
     }
 
@@ -128,10 +128,10 @@ public class DefaultFilmService implements FilmService {
         boolean searchByTitle = titleByDirector.contains("title");
         boolean searchByDirector = titleByDirector.contains("director");
 
-        if (!searchByTitle || !searchByDirector) {
-            searchByTitle = true;
-            searchByDirector = true;
-        }
+//        if (!searchByTitle || !searchByDirector) {
+//            searchByTitle = true;
+//            searchByDirector = true;
+//        }
         log.info("searchFilms(String query, String by): " + filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector));
         List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector)
                 .stream()
@@ -149,6 +149,8 @@ public class DefaultFilmService implements FilmService {
         if (!"year".equals(sortBy) && !"likes".equals(sortBy)) {
             throw new ValidationException("Invalid sortBy parameter");
         }
+
+        directorService.findDirectorById(directorId);
 
         Set<String> sortByYearLikes = Arrays.stream(sortBy.split(","))
                 .map(String::trim)

@@ -45,4 +45,9 @@ public class GenreDbStorage implements GenreStorage {
                 "(SELECT GENRE_ID FROM FILM_GENRE WHERE FILM_ID = ?)", genreRowMapper, filmId);
         return new HashSet<>(genres);
     }
+
+    @Override
+    public void deleteGenresByFilmId(Long filmId) {
+        jdbcTemplate.update("DELETE FROM FILM_GENRE WHERE FILM_ID = ?", filmId);
+    }
 }

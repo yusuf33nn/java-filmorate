@@ -27,6 +27,8 @@ public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final UserRowMapper userRowMapper;
+    private final GenreDbStorage genreDbStorage;
+    private final MpaRatingDbStorage ratingDbStorage;
 
     @Override
     public List<User> showAllUsers() {
@@ -133,6 +135,9 @@ public class UserDbStorage implements UserStorage {
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .map(entry -> findFilmById(entry.getKey()))
+                .peek(film -> {
+                        film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+                        film.setMpa(ratingDbStorage.getMpaRatingById(film.getMpa().getId()).orElse(null));})
                 .collect(Collectors.toList());
     }
 
@@ -192,10 +197,15 @@ public class UserDbStorage implements UserStorage {
         }
 
         try {
+            /*jdbcTemplate.update("DELETE FROM REVIEWS_GRADES WHERE userId = ?", userId);
+            jdbcTemplate.update("DELETE FROM REVIEWS_GRADES WHERE review_id =" +
+                    " (select id from reviews where user_id = ?)", userId);*/
+            jdbcTemplate.update("DELETE FROM REVIEWS WHERE user_id = ?", userId);
             jdbcTemplate.update("DELETE FROM friendship WHERE requester_id = ?", userId);
             jdbcTemplate.update("DELETE FROM friendship WHERE receiver_id = ?", userId);
             jdbcTemplate.update("DELETE FROM film_like WHERE user_id = ?", userId);
             jdbcTemplate.update("DELETE FROM users WHERE id = ?", userId);
+
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при удалении пользователя", e);
         }

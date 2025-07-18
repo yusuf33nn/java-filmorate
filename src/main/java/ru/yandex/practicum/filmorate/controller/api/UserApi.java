@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
@@ -35,7 +36,7 @@ public interface UserApi {
     ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserRequestDto user);
 
     @GetMapping("/{userId}/recommendations")
-    ResponseEntity<List<Film>> getRecommendations(@PathVariable Long userId);
+    ResponseEntity<List<FilmResponseDto>> getRecommendations(@PathVariable Long userId);
 
     @DeleteMapping("/{userId}")
     ResponseEntity<UserResponseDto> removeUserById(@PathVariable Long userId);

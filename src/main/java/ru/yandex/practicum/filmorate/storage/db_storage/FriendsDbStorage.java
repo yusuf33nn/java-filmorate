@@ -28,7 +28,6 @@ public class FriendsDbStorage implements FriendsStorage {
                     SELECT RECEIVER_ID
                     FROM FRIENDSHIP
                     WHERE REQUESTER_ID = ?
-                    AND STATUS = 'CONFIRMED'
                 )
                 """;
 

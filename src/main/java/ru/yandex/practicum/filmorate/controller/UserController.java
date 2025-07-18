@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
+import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
@@ -52,7 +54,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<List<Film>> getRecommendations(@PathVariable Long userId) {
+    public ResponseEntity<List<FilmResponseDto>> getRecommendations(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getRecommendations(userId));
     }
 
