@@ -6,12 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.api.UserApi;
-import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
-import ru.yandex.practicum.filmorate.model.entity.Film;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 
 import java.util.List;
