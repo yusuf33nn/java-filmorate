@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS user_event_feed
     user_id    bigint      not NULL,
     event_type varchar(50) not null,
     operation  varchar(50) not null,
-    entityId   bigint      not null,
+    entity_id   bigint      not null,
     timestamp TIMESTAMP DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );

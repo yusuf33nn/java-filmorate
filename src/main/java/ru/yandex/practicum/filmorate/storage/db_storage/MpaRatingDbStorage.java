@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.mapper.MpaRatingRowMapper;
+import ru.yandex.practicum.filmorate.mapper.row.MpaRatingRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.MpaRating;
 import ru.yandex.practicum.filmorate.storage.api.MpaRatingStorage;
 
