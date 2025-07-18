@@ -19,7 +19,6 @@ import ru.yandex.practicum.filmorate.storage.db_storage.UserDbStorage;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
