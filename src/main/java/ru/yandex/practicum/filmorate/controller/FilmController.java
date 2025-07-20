@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.service.api.FilmService;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -27,23 +28,35 @@ public class FilmController implements FilmApi {
 
     @Override
     public ResponseEntity<FilmResponseDto> findFilmById(Long id) {
+        log.info("Find film by id: {}", id);
         return ResponseEntity.ok(filmService.findFilmById(id));
     }
 
     @Override
-    public ResponseEntity<List<FilmResponseDto>> showMostPopularFilms(int count) {
-        return ResponseEntity.ok(filmService.showMostPopularFilms(count));
+    public ResponseEntity<Set<FilmResponseDto>> showMostPopularFilms(int count, Integer genreId, Integer year) {
+        return ResponseEntity.ok(filmService.showMostPopularFilms(count, genreId, year));
+    }
+
+    @Override
+    public ResponseEntity<List<FilmResponseDto>> searchFilms(String query, String by) {
+        return ResponseEntity.ok(filmService.searchFilms(query, by));
+    }
+
+    @Override
+    public ResponseEntity<List<FilmResponseDto>> searchFilmsByDirector(Long directorId, String sortBy) {
+        log.info("Getting films by director ID: {}, sorted by: {}", directorId, sortBy);
+        return ResponseEntity.ok(filmService.searchFilmsByDirector(directorId, sortBy));
     }
 
     @Override
     public ResponseEntity<FilmResponseDto> createFilm(FilmRequestDto film) {
-        log.info("Request Body: {}", film);
+        log.info("Request Film create: {}", film);
         return ResponseEntity.status(CREATED).body(filmService.createFilm(film));
     }
 
     @Override
     public ResponseEntity<FilmResponseDto> updateFilm(FilmRequestDto film) {
-        log.info("Request Body: {}", film);
+        log.info("Request Update Body: {}", film);
         return ResponseEntity.ok(filmService.updateFilm(film));
     }
 
@@ -56,6 +69,17 @@ public class FilmController implements FilmApi {
     @Override
     public ResponseEntity<Void> removeLikeFromSpecificFilmByUser(Long id, Long userId) {
         filmService.removeLikeFromSpecificFilmByUser(id, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<List<FilmResponseDto>> showCommonFilms(Long userId, Long friendId) {
+        return ResponseEntity.ok(filmService.findCommonFilms(userId, friendId));
+    }
+
+    @Override
+    public ResponseEntity<FilmResponseDto> removeFilmById(Long id) {
+        filmService.removeFilmById(id);
         return ResponseEntity.ok().build();
     }
 }

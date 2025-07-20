@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.mapper.GenreRowMapper;
+import ru.yandex.practicum.filmorate.mapper.row.GenreRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.Genre;
 import ru.yandex.practicum.filmorate.storage.api.GenreStorage;
 
@@ -44,5 +44,10 @@ public class GenreDbStorage implements GenreStorage {
         List<Genre> genres = jdbcTemplate.query("SELECT * FROM GENRE WHERE ID in " +
                 "(SELECT GENRE_ID FROM FILM_GENRE WHERE FILM_ID = ?)", genreRowMapper, filmId);
         return new HashSet<>(genres);
+    }
+
+    @Override
+    public void deleteGenresByFilmId(Long filmId) {
+        jdbcTemplate.update("DELETE FROM FILM_GENRE WHERE FILM_ID = ?", filmId);
     }
 }

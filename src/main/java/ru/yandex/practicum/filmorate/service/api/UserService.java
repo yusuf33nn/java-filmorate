@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service.api;
 
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
 
 import java.util.List;
@@ -16,4 +18,10 @@ public interface UserService {
     UserResponseDto updateUser(UserRequestDto user);
 
     void deleteUser(Long userId);
+
+    List<FilmResponseDto> getRecommendations(Long userId);
+
+    void removeUserById(Long userId);
+
+    List<UserEventFeedResponseDto> getLastUserEvents(Long userId);
 }

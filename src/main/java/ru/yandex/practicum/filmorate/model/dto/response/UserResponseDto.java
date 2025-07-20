@@ -21,4 +21,5 @@ public class UserResponseDto {
     LocalDate birthday;
     @Builder.Default
     Set<Long> friends = Collections.emptySet();
+    Integer likesCount;
 }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.mapper.UserRowMapper;
+import ru.yandex.practicum.filmorate.mapper.row.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.entity.User;
 import ru.yandex.practicum.filmorate.storage.api.FriendsStorage;
 
@@ -21,17 +21,20 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public Set<User> retrieveUsersFriends(Long userId) {
-        var sql = "SELECT * " +
-                    "FROM USERS " +
-                   "WHERE ID in (" +
-                        "SELECT RECEIVER_ID " +
-                          "FROM FRIENDSHIP " +
-                         "WHERE REQUESTER_ID = ? " +
-                           "AND STATUS = 'CONFIRMED'" +
-                ")";
+        String sql = """
+                SELECT *
+                FROM USERS
+                WHERE ID IN (
+                    SELECT RECEIVER_ID
+                    FROM FRIENDSHIP
+                    WHERE REQUESTER_ID = ?
+                )
+                """;
+
         List<User> userFriends = jdbcTemplate.query(sql, userRowMapper, userId);
         return new LinkedHashSet<>(userFriends);
     }
+
 
     @Override
     public Set<User> showCommonFriends(Long userId, Long otherId) {
@@ -42,9 +45,7 @@ public class FriendsDbStorage implements FriendsStorage {
     public int addToFriends(Long userId, Long friendId) {
         try {
             var requesterSql = "insert into friendship (REQUESTER_ID, RECEIVER_ID, STATUS) values (?, ?, 'CONFIRMED')";
-            jdbcTemplate.update(requesterSql, userId, friendId);
-            var receiverSql = "insert into friendship (REQUESTER_ID, RECEIVER_ID, STATUS) values (?, ?, 'PENDING')";
-            return jdbcTemplate.update(receiverSql, friendId, userId);
+            return jdbcTemplate.update(requesterSql, userId, friendId);
         } catch (DataAccessException e) {
             throw new RuntimeException("Cannot add friendship: " + e.getMessage(), e);
         }
@@ -55,8 +56,6 @@ public class FriendsDbStorage implements FriendsStorage {
         try {
             var requesterSql = "DELETE FROM friendship WHERE REQUESTER_ID = ? AND RECEIVER_ID = ?";
             jdbcTemplate.update(requesterSql, userId, friendId);
-//            var receiverSql = "DELETE FROM friendship WHERE REQUESTER_ID = ? AND RECEIVER_ID = ?";
-//            jdbcTemplate.update(receiverSql, friendId, userId);
         } catch (DataAccessException e) {
             throw new RuntimeException("Cannot remove friendship: " + e.getMessage(), e);
         }

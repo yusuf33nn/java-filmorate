@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.dto.GenreMapper;
+import ru.yandex.practicum.filmorate.model.dto.response.GenreDto;
 import ru.yandex.practicum.filmorate.model.entity.Genre;
 import ru.yandex.practicum.filmorate.service.api.GenreService;
 import ru.yandex.practicum.filmorate.storage.db_storage.GenreDbStorage;
@@ -17,13 +19,13 @@ public class DefaultGenreService implements GenreService {
     private final GenreDbStorage genreDbStorage;
 
     @Override
-    public List<Genre> getAllGenres() {
-        return genreDbStorage.getAllGenres();
+    public List<GenreDto> getAllGenres() {
+        return genreDbStorage.getAllGenres().stream().map(GenreMapper::toDto).toList();
     }
 
     @Override
-    public Genre getGenreById(Integer id) {
-        return genreDbStorage.getGenreById(id).orElseThrow(
+    public GenreDto getGenreById(Integer id) {
+        return genreDbStorage.getGenreById(id).map(GenreMapper::toDto).orElseThrow(
                 () -> new NotFoundException("Genre with id " + id + " not found")
         );
     }

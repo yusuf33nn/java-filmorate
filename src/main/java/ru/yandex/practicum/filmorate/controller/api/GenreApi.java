@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.yandex.practicum.filmorate.model.entity.Genre;
+import ru.yandex.practicum.filmorate.model.dto.response.GenreDto;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import java.util.List;
 public interface GenreApi {
 
     @GetMapping
-    ResponseEntity<List<Genre>> showAllGenres();
+    ResponseEntity<List<GenreDto>> showAllGenres();
 
     @GetMapping("/{id}")
-    ResponseEntity<Genre> findGenreById(@PathVariable Integer id);
+    ResponseEntity<GenreDto> findGenreById(@PathVariable Integer id);
 }

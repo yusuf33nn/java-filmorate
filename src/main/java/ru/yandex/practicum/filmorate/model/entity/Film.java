@@ -1,6 +1,13 @@
 package ru.yandex.practicum.filmorate.model.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -30,4 +37,6 @@ public class Film {
     Set<Long> likes = Collections.emptySet();
     @Builder.Default
     Set<Genre> genres = Collections.emptySet();
+    @Builder.Default
+    Set<Director> directors = Collections.emptySet();
 }

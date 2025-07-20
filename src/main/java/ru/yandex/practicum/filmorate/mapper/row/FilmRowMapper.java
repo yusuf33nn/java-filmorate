@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.mapper;
+package ru.yandex.practicum.filmorate.mapper.row;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 @Component
 public class FilmRowMapper implements RowMapper<Film> {
+
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Film.builder()

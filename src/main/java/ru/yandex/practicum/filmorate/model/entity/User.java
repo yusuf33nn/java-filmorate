@@ -1,6 +1,13 @@
 package ru.yandex.practicum.filmorate.model.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
@@ -24,4 +31,5 @@ public class User {
     LocalDate birthday;
     @Builder.Default
     Set<Long> friends = Collections.emptySet();
+    Integer likesCount;
 }

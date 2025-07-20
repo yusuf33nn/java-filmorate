@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.mapper.dto.FilmMapper;
+import ru.yandex.practicum.filmorate.mapper.dto.UserMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.UserRequestDto;
+import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
+import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.UserResponseDto;
+import ru.yandex.practicum.filmorate.service.api.UserEventFeedService;
 import ru.yandex.practicum.filmorate.service.api.UserService;
 import ru.yandex.practicum.filmorate.storage.api.UserStorage;
 
@@ -22,49 +26,42 @@ public class DefaultUserService implements UserService {
 
     @Qualifier(value = "userDbStorage")
     private final UserStorage userStorage;
-    private final UserMapper userMapper;
+    private final UserEventFeedService userEventFeedService;
 
     @Override
     public List<UserResponseDto> showAllUsers() {
         return userStorage.showAllUsers()
                 .stream()
-                .map(userMapper::toDto)
+                .map(UserMapper::toDto)
                 .toList();
     }
 
     @Override
     public UserResponseDto findUserById(Long userId) {
         return userStorage.findUserById(userId)
-                .map(userMapper::toDto)
-                .orElseThrow(() -> {
-                    var errorMessage = "User with ID: '%d' is not found".formatted(userId);
-                    log.error(errorMessage);
-                    return new NotFoundException(errorMessage);
-                });
+                .map(UserMapper::toDto)
+                .orElseThrow(() -> new NotFoundException("User with ID: '%d' is not found".formatted(userId)));
     }
-
 
     @Override
     public UserResponseDto createUser(UserRequestDto user) {
         if (StringUtils.isBlank(user.getName())) {
             user.setName(user.getLogin());
         }
-        var createdUser = userStorage.saveUser(userMapper.toEntity(user));
-        return userMapper.toDto(createdUser);
+        var createdUser = userStorage.saveUser(UserMapper.toEntity(user));
+        return UserMapper.toDto(createdUser);
     }
 
     @Override
     public UserResponseDto updateUser(UserRequestDto user) {
         Long userId = user.getId();
         if (userId == null || userId == 0) {
-            var errorMessage = "User id cannot be null or zero for update operation";
-            log.error(errorMessage);
-            throw new ValidationException(errorMessage);
+            throw new ValidationException("User id cannot be null or zero for update operation");
         }
         findUserById(userId);
-        var updatedRows = userStorage.updateUser(userMapper.toEntity(user));
+        var updatedRows = userStorage.updateUser(UserMapper.toEntity(user));
         if (updatedRows != 1) {
-            throw new RuntimeException("Error while updating user with ID: " + userId);
+            throw new RuntimeException("Error while updating user with ID: %d".formatted(userId));
         }
         return findUserById(userId);
     }
@@ -72,5 +69,20 @@ public class DefaultUserService implements UserService {
     @Override
     public void deleteUser(Long userId) {
         userStorage.deleteUser(userId);
+    }
+
+    @Override
+    public List<FilmResponseDto> getRecommendations(Long userId) {
+        return userStorage.getTopRecommendations(userId).stream().map(FilmMapper::toDto).toList();
+    }
+
+    @Override
+    public void removeUserById(Long userId) {
+        userStorage.removeUserById(userId);
+    }
+
+    @Override
+    public List<UserEventFeedResponseDto> getLastUserEvents(Long userId) {
+        return userEventFeedService.getLastUserEvents(userId);
     }
 }

@@ -12,7 +12,7 @@ public interface FilmStorage {
 
     Optional<Film> findFilmById(Long filmId);
 
-    Set<Film> showMostPopularFilms(Integer count);
+    Set<Film> showMostPopularFilms(Integer count, Integer genreId, Integer year);
 
     Film saveFilm(Film film);
 
@@ -23,4 +23,12 @@ public interface FilmStorage {
     void removeLikeFromSpecificFilmByUser(Long filmId, Long userId);
 
     Set<Long> getFilmLikesByFilmId(Long filmId);
+
+    List<Film> searchFilms(String query, Boolean searchByTitle, Boolean searchByDirector);
+
+    List<Film> findFilmsByDirector(Long directorId, String sortBy);
+
+    List<Film> findCommon(Long userId, Long friendId);
+
+    void removeFilmById(Long filmId);
 }
