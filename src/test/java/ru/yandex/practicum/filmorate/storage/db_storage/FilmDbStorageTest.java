@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.db_storage;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -110,6 +112,6 @@ class FilmDbStorageTest {
         // Поиск, который не должен ничего найти
         List<Film> films = filmDbStorage.searchFilms("несуществующий запрос", true, true);
 
-        assertTrue(films.isEmpty());
+        assertTrue(CollectionUtils.isEmpty(films));
     }
 }

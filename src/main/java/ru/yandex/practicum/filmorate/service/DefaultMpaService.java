@@ -14,18 +14,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultMpaService implements MpaRatingService {
 
-    private final MpaMapper mpaMapper;
     private final MpaRatingStorage mpaRatingStorage;
 
     @Override
     public List<MpaDto> getAllMpaRatings() {
-        return mpaRatingStorage.getAllMpaRatings().stream().map(mpaMapper::toDto).toList();
+        return mpaRatingStorage.getAllMpaRatings().stream().map(MpaMapper::toDto).toList();
     }
 
     @Override
     public MpaDto getMpaRatingById(int id) {
         return mpaRatingStorage.getMpaRatingById(id)
-                .map(mpaMapper::toDto)
+                .map(MpaMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Mpa rating with ID = %d not found".formatted(id)));
     }
 }

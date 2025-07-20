@@ -2,9 +2,9 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import ru.yandex.practicum.filmorate.mapper.dto.UserMapper;
 import ru.yandex.practicum.filmorate.model.dto.response.EventType;
 import ru.yandex.practicum.filmorate.model.dto.response.Operation;
@@ -29,7 +29,6 @@ public class DefaultFriendsService implements FriendsService {
     private final UserService userService;
     @Qualifier(value = "friendsDbStorage")
     private final FriendsStorage friendsStorage;
-    private final UserMapper userMapper;
     private final UserEventFeedService userEventFeedService;
 
     @Override
@@ -39,25 +38,25 @@ public class DefaultFriendsService implements FriendsService {
         if (CollectionUtils.isEmpty(userFriends)) {
             return Collections.emptySet();
         }
-        return userFriends.stream().map(userMapper::toDto).collect(Collectors.toSet());
+        return userFriends.stream().map(UserMapper::toDto).collect(Collectors.toSet());
     }
 
     @Override
     public Set<UserResponseDto> showCommonFriends(Long userId, Long otherId) {
         userService.findUserById(userId);
         Set<User> userFriends = friendsStorage.retrieveUsersFriends(userId);
-        if (userFriends.isEmpty()) {
+        if (CollectionUtils.isEmpty(userFriends)) {
             return Collections.emptySet();
         }
 
         userService.findUserById(otherId);
         Set<User> otherUserFriends = friendsStorage.retrieveUsersFriends(otherId);
-        if (otherUserFriends.isEmpty()) {
+        if (CollectionUtils.isEmpty(otherUserFriends)) {
             return Collections.emptySet();
         }
         return userFriends.stream()
                 .filter(otherUserFriends::contains)
-                .map(userMapper::toDto)
+                .map(UserMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

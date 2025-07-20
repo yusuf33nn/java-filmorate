@@ -31,43 +31,41 @@ public class DefaultReviewService implements ReviewService {
     private final ReviewStorage reviewStorage;
     private final UserService userService;
     private final FilmService filmService;
-    private final ReviewMapper reviewMapper;
     private final UserEventFeedService userEventFeedService;
 
     @Override
     public ReviewResponseDto createReview(ReviewRequestDto reviewDto) {
-        Review reviewEntity = reviewMapper.toEntity(reviewDto);
+        Review reviewEntity = ReviewMapper.toEntity(reviewDto);
         userService.findUserById(reviewEntity.getUserId());
         filmService.findFilmById(reviewEntity.getFilmId());
         reviewEntity = reviewStorage.saveReview(reviewEntity);
         userEventFeedService.saveEvent(createReviewEvent(reviewEntity, Operation.ADD));
-        return reviewMapper.toDto(reviewEntity);
+        return ReviewMapper.toDto(reviewEntity);
     }
 
     @Override
     public ReviewResponseDto updateReview(ReviewRequestDto reviewDto) {
         Long reviewId = reviewDto.getReviewId();
         if (reviewId == null || reviewId == 0) {
-            log.error("Review id cannot be null or zero for update operation");
-            throw new RuntimeException();
+            throw new RuntimeException("Review id cannot be null or zero for update operation");
         }
         findReviewById(reviewId);
-        Review review = reviewStorage.updateReview(reviewMapper.toEntity(reviewDto));
+        Review review = reviewStorage.updateReview(ReviewMapper.toEntity(reviewDto));
         userEventFeedService.saveEvent(createReviewEvent(review, Operation.UPDATE));
-        return reviewMapper.toDto(review);
+        return ReviewMapper.toDto(review);
     }
 
     @Override
     public ReviewResponseDto findReviewById(Long reviewId) {
         return reviewStorage.findReviewById(reviewId)
-                .map(reviewMapper::toDto)
+                .map(ReviewMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Review with ID: '%d' is not found".formatted(reviewId)));
     }
 
     @Override
     public LinkedHashSet<ReviewResponseDto> findReviewByFilm(Long filmId, Long count) {
         return reviewStorage.findReviewByFilm(filmId, count).stream()
-                .map(reviewMapper::toDto)
+                .map(ReviewMapper::toDto)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -84,12 +82,10 @@ public class DefaultReviewService implements ReviewService {
     public void addReviewLike(Long reviewId, Long userId) {
 
         if (reviewId == null || reviewId == 0) {
-            log.error("Review id cannot be null or zero for addReviewLike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("Review id cannot be null or zero for addReviewLike operation");
         }
         if (userId == null || userId == 0) {
-            log.error("UserId cannot be null or zero for addReviewLike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("UserId cannot be null or zero for addReviewLike operation");
         }
         userService.findUserById(userId);
         findReviewById(reviewId);
@@ -100,12 +96,10 @@ public class DefaultReviewService implements ReviewService {
     public void addReviewDislike(Long reviewId, Long userId) {
 
         if (reviewId == null || reviewId == 0) {
-            log.error("Review id cannot be null or zero for addReviewDislike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("Review id cannot be null or zero for addReviewDislike operation");
         }
         if (userId == null || userId == 0) {
-            log.error("UserId cannot be null or zero for addReviewDislike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("UserId cannot be null or zero for addReviewDislike operation");
         }
         userService.findUserById(userId);
         findReviewById(reviewId);
@@ -115,12 +109,10 @@ public class DefaultReviewService implements ReviewService {
     @Override
     public void deleteReviewLike(Long reviewId, Long userId) {
         if (reviewId == null || reviewId == 0) {
-            log.error("Review id cannot be null or zero for deleteReviewLike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("Review id cannot be null or zero for deleteReviewLike operation");
         }
         if (userId == null || userId == 0) {
-            log.error("UserId cannot be null or zero for deleteReviewLike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("UserId cannot be null or zero for deleteReviewLike operation");
         }
         userService.findUserById(userId);
         findReviewById(reviewId);
@@ -130,12 +122,10 @@ public class DefaultReviewService implements ReviewService {
     @Override
     public void deleteReviewDislike(Long reviewId, Long userId) {
         if (reviewId == null || reviewId == 0) {
-            log.error("Review id cannot be null or zero for deleteReviewDislike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("Review id cannot be null or zero for deleteReviewDislike operation");
         }
         if (userId == null || userId == 0) {
-            log.error("UserId cannot be null or zero for deleteReviewDislike operation");
-            throw new RuntimeException();
+            throw new RuntimeException("UserId cannot be null or zero for deleteReviewDislike operation");
         }
         userService.findUserById(userId);
         findReviewById(reviewId);

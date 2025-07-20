@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.db_storage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -133,7 +134,7 @@ public class FilmDbStorage implements FilmStorage {
         film.setLikes(getFilmLikesByFilmId(film.getId()));
         film.setId(generatedId);
 
-        if (!film.getDirectors().isEmpty()) {
+        if (CollectionUtils.isNotEmpty(film.getDirectors())) {
             String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
             List<Object[]> batchArgs = film.getDirectors().stream()
                     .map(director -> new Object[]{film.getId(), director.getId()})
@@ -186,7 +187,7 @@ public class FilmDbStorage implements FilmStorage {
 
         film.setDirectors(new HashSet<>(directorCollection));
 
-        if (!film.getDirectors().isEmpty()) {
+        if (CollectionUtils.isNotEmpty(film.getDirectors())) {
             String filmDirectorsSql = "INSERT INTO film_director (film_id, director_id) VALUES (?, ?)";
             List<Object[]> batchArgs = film.getDirectors().stream()
                     .map(director -> new Object[]{film.getId(), director.getId()})

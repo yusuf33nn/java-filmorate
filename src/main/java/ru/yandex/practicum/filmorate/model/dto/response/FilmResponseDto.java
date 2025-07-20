@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.filmorate.model.entity.Genre;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class FilmResponseDto {
     @Builder.Default
     Set<Long> likes = Collections.emptySet();
     @Builder.Default
-    Set<Genre> genres = Collections.emptySet();
+    Set<GenreDto> genres = Collections.emptySet();
     @Builder.Default
     Set<DirectorResponseDto> directors = Collections.emptySet();
 }

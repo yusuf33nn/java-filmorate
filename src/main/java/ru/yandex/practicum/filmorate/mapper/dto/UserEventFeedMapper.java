@@ -1,13 +1,13 @@
 package ru.yandex.practicum.filmorate.mapper.dto;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.yandex.practicum.filmorate.model.dto.response.UserEventFeedResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.UserEventFeed;
 
 import java.time.ZoneId;
 
-@Component
-public final class UserEventFeedMapper {
+@UtilityClass
+public class UserEventFeedMapper {
 
     public UserEventFeedResponseDto toDto(UserEventFeed e) {
         var timestamp = e.getTimestamp()

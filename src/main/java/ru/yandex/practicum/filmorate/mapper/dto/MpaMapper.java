@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.mapper.dto;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.yandex.practicum.filmorate.model.dto.response.MpaDto;
 import ru.yandex.practicum.filmorate.model.entity.MpaRating;
 
-@Component
-public final class MpaMapper {
+@UtilityClass
+public class MpaMapper {
 
     public MpaDto toDto(MpaRating e) {
         return MpaDto.builder()

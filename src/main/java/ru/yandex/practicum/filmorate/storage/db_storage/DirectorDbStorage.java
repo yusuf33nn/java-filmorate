@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.db_storage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -88,7 +89,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public Collection<Director> findDirectorsByParams(Collection<Long> params) {
-        if (params.isEmpty()) {
+        if (CollectionUtils.isEmpty(params)) {
             return new ArrayList<>();
         }
         String sql = "SELECT * FROM directors WHERE id IN (:ids) ORDER BY id ";

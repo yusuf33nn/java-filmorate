@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.dto.FilmMapper;
+import ru.yandex.practicum.filmorate.mapper.dto.GenreMapper;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.DirectorResponseDto;
 import ru.yandex.practicum.filmorate.model.dto.response.EventType;
@@ -37,7 +38,6 @@ public class DefaultFilmService implements FilmService {
     @Qualifier(value = "filmDbStorage")
     private final FilmStorage filmStorage;
     private final UserService userService;
-    private final FilmMapper filmMapper;
     private final GenreService genreService;
     private final MpaRatingService mpaRatingService;
     private final DirectorService directorService;
@@ -46,14 +46,14 @@ public class DefaultFilmService implements FilmService {
     @Override
     public List<FilmResponseDto> findAllFilms() {
         return filmStorage.findAll().stream()
-                .map(filmMapper::toDto)
+                .map(FilmMapper::toDto)
                 .toList();
     }
 
     @Override
     public FilmResponseDto findFilmById(Long filmId) {
         return filmStorage.findFilmById(filmId)
-                .map(filmMapper::toDto)
+                .map(FilmMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Film with ID: '%d' is not found".formatted(filmId)));
     }
 
@@ -61,28 +61,27 @@ public class DefaultFilmService implements FilmService {
     public LinkedHashSet<FilmResponseDto> showMostPopularFilms(Integer count, Integer genreId, Integer year) {
         return filmStorage.showMostPopularFilms(count, genreId, year)
                 .stream()
-                .map(filmMapper::toDto)
+                .map(FilmMapper::toDto)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
     public FilmResponseDto createFilm(FilmRequestDto filmDto) {
-        Film filmEntity = filmMapper.toEntity(filmDto);
+        Film filmEntity = FilmMapper.toEntity(filmDto);
         mpaRatingService.getMpaRatingById(filmDto.getMpa().getId());
         filmEntity = filmStorage.saveFilm(filmEntity);
-        return filmMapper.toDto(filmEntity);
+        return FilmMapper.toDto(filmEntity);
     }
 
     @Override
     public FilmResponseDto updateFilm(FilmRequestDto filmDto) {
         Long filmId = filmDto.getId();
         if (filmId == null || filmId == 0) {
-            log.error("Film id cannot be null or zero for update operation");
-            throw new RuntimeException();
+            throw new RuntimeException("Film id cannot be null or zero for update operation");
         }
         findFilmById(filmId);
-        Film film = filmStorage.updateFilm(filmMapper.toEntity(filmDto));
-        return filmMapper.toDto(film);
+        Film film = filmStorage.updateFilm(FilmMapper.toEntity(filmDto));
+        return FilmMapper.toDto(film);
     }
 
     @Override
@@ -104,9 +103,12 @@ public class DefaultFilmService implements FilmService {
     @Override
     public List<FilmResponseDto> findCommonFilms(Long userId, Long friendId) {
         return filmStorage.findCommon(userId, friendId).stream()
-                .map(filmMapper::toDto)
+                .map(FilmMapper::toDto)
                 .peek(film -> {
-                    film.setGenres(genreService.getGenresByFilmId(film.getId()));
+                    var genreDtoSet = genreService.getGenresByFilmId(film.getId()).stream()
+                            .map(GenreMapper::toDto)
+                            .collect(Collectors.toSet());
+                    film.setGenres(genreDtoSet);
                     film.setMpa(mpaRatingService.getMpaRatingById(film.getMpa().getId()));
                 })
                 .toList();
@@ -127,7 +129,7 @@ public class DefaultFilmService implements FilmService {
         List<FilmResponseDto> filmResponseDto = filmStorage.searchFilms(query.toLowerCase(), searchByTitle, searchByDirector)
                 .stream()
                 .peek(film -> film.setGenres(genreService.getGenresByFilmId(film.getId())))
-                .map(filmMapper::toDto)
+                .map(FilmMapper::toDto)
                 .peek(film -> film.setDirectors(directorService.findDirectorsByFilmId(film.getId())))
                 .toList();
         log.info("Films found filmResponseDto: {}", filmResponseDto);
@@ -163,7 +165,7 @@ public class DefaultFilmService implements FilmService {
                                                          boolean sortByLikes) {
         if (sortByYear) {
             filmResponseDto = filmStorage.findFilmsByDirector(directorId, "year").stream()
-                    .map(filmMapper::toDto)
+                    .map(FilmMapper::toDto)
                     .peek(film -> {
                         film.setDirectors(directors);
                     })
@@ -171,11 +173,11 @@ public class DefaultFilmService implements FilmService {
             log.info("Film search by director: " + filmResponseDto);
         }
         if (sortByLikes) {
-            filmResponseDto = filmStorage.findFilmsByDirector(directorId, "likes").stream().map(filmMapper::toDto)
-                    .peek(film -> {
-                        film.setDirectors(directors);
-                    }).toList();
-            log.info("Film search by director: " + filmResponseDto);
+            filmResponseDto = filmStorage.findFilmsByDirector(directorId, "likes").stream()
+                    .map(FilmMapper::toDto)
+                    .peek(film -> film.setDirectors(directors))
+                    .toList();
+            log.info("Film search by director: {}", filmResponseDto);
         }
         return filmResponseDto;
     }

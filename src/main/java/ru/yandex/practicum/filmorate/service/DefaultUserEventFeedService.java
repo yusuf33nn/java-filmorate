@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.dto.UserEventFeedMapper;
@@ -15,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultUserEventFeedService implements UserEventFeedService {
 
-    private final UserEventFeedMapper userEventFeedMapper;
     private final UserEventFeedDbStorage userEventFeedDbStorage;
 
     @Override
@@ -27,9 +27,9 @@ public class DefaultUserEventFeedService implements UserEventFeedService {
     public List<UserEventFeedResponseDto> getLastUserEvents(Long userId) {
         List<UserEventFeedResponseDto> events = userEventFeedDbStorage.getLastUserEvents(userId)
                 .stream()
-                .map(userEventFeedMapper::toDto)
+                .map(UserEventFeedMapper::toDto)
                 .toList();
-        if (events.isEmpty()) {
+        if (CollectionUtils.isEmpty(events)) {
             throw new NotFoundException("Лента для пользователя '%d' пуста".formatted(userId));
         }
         return events;

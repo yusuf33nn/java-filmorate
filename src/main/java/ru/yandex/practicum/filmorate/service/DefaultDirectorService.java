@@ -21,44 +21,41 @@ import java.util.stream.Collectors;
 public class DefaultDirectorService implements DirectorService {
 
     private final DirectorDbStorage directorDbStorage;
-    private final DirectorMapper directorMapper;
 
     @Override
     public List<DirectorResponseDto> showAllDirectors() {
         return directorDbStorage.findAll().stream()
-                .map(directorMapper::toDto)
+                .map(DirectorMapper::toDto)
                 .toList();
     }
 
     @Override
     public DirectorResponseDto findDirectorById(Long id) {
         if (id == null) {
-            return directorDbStorage.findAll().stream().findFirst().map(directorMapper::toDto)
+            return directorDbStorage.findAll().stream().findFirst().map(DirectorMapper::toDto)
                     .orElseThrow(() -> new NotFoundException("Director not found"));
         }
         return directorDbStorage.findDirectorById(id)
-                .map(directorMapper::toDto)
+                .map(DirectorMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Director with id: '%d' not found".formatted(id)));
     }
 
     @Override
     public DirectorResponseDto createDirector(DirectorRequestDto director) {
-        var directorEntity = directorDbStorage.saveDirector(directorMapper.toEntity(director));
-        return directorMapper.toDto(directorEntity);
+        var directorEntity = directorDbStorage.saveDirector(DirectorMapper.toEntity(director));
+        return DirectorMapper.toDto(directorEntity);
     }
 
     @Override
     public DirectorResponseDto updateDirector(DirectorRequestDto director) {
         Long directorId = director.getId();
         if (directorId == null || directorId == 0) {
-            var errorMessage = "Director id cannot be null or zero for update operation";
-            log.error(errorMessage);
-            throw new ValidationException(errorMessage);
+            throw new ValidationException("Director id cannot be null or zero for update operation");
         }
         findDirectorById(directorId);
-        var updatedDirector = directorDbStorage.updateDirector(directorMapper.toEntity(director));
+        var updatedDirector = directorDbStorage.updateDirector(DirectorMapper.toEntity(director));
         if (updatedDirector == null) {
-            throw new RuntimeException("Error while updating Director with ID: " + directorId);
+            throw new RuntimeException("Error while updating Director with ID: %d".formatted(directorId));
         }
         return findDirectorById(directorId);
     }
@@ -70,11 +67,11 @@ public class DefaultDirectorService implements DirectorService {
 
     @Override
     public Set<DirectorResponseDto> findDirectorsByDirectorId(Long directorId) {
-        return directorDbStorage.findDirectorsByDirectorId(directorId).stream().map(directorMapper::toDto).collect(Collectors.toSet());
+        return directorDbStorage.findDirectorsByDirectorId(directorId).stream().map(DirectorMapper::toDto).collect(Collectors.toSet());
     }
 
     @Override
     public Set<DirectorResponseDto> findDirectorsByFilmId(Long filmId) {
-        return directorDbStorage.findDirectorsByFilmId(filmId).stream().map(directorMapper::toDto).collect(Collectors.toSet());
+        return directorDbStorage.findDirectorsByFilmId(filmId).stream().map(DirectorMapper::toDto).collect(Collectors.toSet());
     }
 }

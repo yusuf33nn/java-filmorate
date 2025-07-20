@@ -1,20 +1,14 @@
 package ru.yandex.practicum.filmorate.mapper.dto;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.yandex.practicum.filmorate.model.dto.request.FilmRequestDto;
 import ru.yandex.practicum.filmorate.model.dto.response.FilmResponseDto;
 import ru.yandex.practicum.filmorate.model.entity.Film;
 
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
-@Component
-@RequiredArgsConstructor
-public final class FilmMapper {
-
-    private final MpaMapper mpaMapper;
-    private final DirectorMapper directorMapper;
+@UtilityClass
+public class FilmMapper {
 
     public FilmResponseDto toDto(Film e) {
         return FilmResponseDto.builder()
@@ -23,9 +17,9 @@ public final class FilmMapper {
                 .description(e.getDescription())
                 .duration(e.getDuration())
                 .releaseDate(e.getReleaseDate())
-                .mpa(mpaMapper.toDto(e.getMpa()))
-                .genres(e.getGenres())
-                .directors(e.getDirectors().stream().map(directorMapper::toDto).collect(Collectors.toSet()))
+                .mpa(MpaMapper.toDto(e.getMpa()))
+                .genres(e.getGenres().stream().map(GenreMapper::toDto).collect(Collectors.toSet()))
+                .directors(e.getDirectors().stream().map(DirectorMapper::toDto).collect(Collectors.toSet()))
                 .likes(e.getLikes())
                 .build();
     }
@@ -37,10 +31,10 @@ public final class FilmMapper {
                 .description(dto.getDescription())
                 .releaseDate(dto.getReleaseDate())
                 .duration(dto.getDuration())
-                .mpa(mpaMapper.toEntity(dto.getMpa()))
+                .mpa(MpaMapper.toEntity(dto.getMpa()))
                 .likes(dto.getLikes())
-                .genres(new HashSet<>(dto.getGenres()))
-                .directors(dto.getDirectors().stream().map(directorMapper::toEntity).collect(Collectors.toSet()))
+                .genres(dto.getGenres().stream().map(GenreMapper::toEntity).collect(Collectors.toSet()))
+                .directors(dto.getDirectors().stream().map(DirectorMapper::toEntity).collect(Collectors.toSet()))
                 .build();
     }
 }
